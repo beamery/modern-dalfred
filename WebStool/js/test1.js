@@ -1,0 +1,3 @@
+var dog = {
+    color: "brown"
+};
