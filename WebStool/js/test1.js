@@ -1,4 +1,0 @@
-var dog = {
-    color: "brown"
-};
-

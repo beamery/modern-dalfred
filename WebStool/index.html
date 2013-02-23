@@ -4,13 +4,38 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		<title>Web Stool</title>
-        <script type="text/javascript" src="js/yepnope.1.5.4-min.js"></script>
-		<script type="text/javascript" src="http://davidbau.com/encode/seedrandom-min.js"></script>
+		<style>
+			canvas { /*width: 100%; height: 100%;*/border: 1px solid black; }
+		</style>
+        <script type="text/javascript" src="js/lib/yepnope.1.5.4-min.js"></script>
+		<script type="text/javascript" src="js/lib/seedrandom-min.js"></script>
+		<script type="text/javascript" src="js/lib/three.min.js"></script>
+
+		<script id="frag-shader" type="x-shader/x-fragment">
+			// FRAGMENT SHADER
+			precision mediump float;
+
+			void main() {
+				gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+			}
+		</script>
+
+		<script id="vert-shader" type="x-shader/x-vertex">
+			// VERTEX SHADER
+			attribute vec3 vertexPos;
+
+			uniform mat4 mView;
+			uniform mat4 proj;
+
+			void main() {
+				gl_Position = proj * modelView * vec4(aVertexPosition, 1.0);
+			}
+		</script>
+
 	</head>
 	<body>
 
-		<canvas id="myCanvas" width="512" height="512" style="border:1px solid black;">
-		</canvas>
+		<canvas id="myCanvas" width="640" height="480"></canvas>
 		<p id="genTime"></p>
 
         <script type="text/javascript" src="js/main.js"></script>

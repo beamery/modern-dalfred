@@ -1,3 +1,0 @@
-var cat = {
-    says: "meow"
-};
