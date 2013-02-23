@@ -3,10 +3,13 @@
 var APP = APP || {};
 
 APP.runTests = function() {
+    'use strict';
+    console.log('running tests...');
     APP._testMatStack();
 };
 
 APP._testMatStack = function() {
+    'use strict';
     var matStack = new APP.MatStack();
 
     try {

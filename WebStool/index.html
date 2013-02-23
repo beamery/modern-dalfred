@@ -12,15 +12,20 @@
 		<script type="text/javascript" src="js/lib/three.min.js"></script>
 
 		<script id="frag-shader" type="x-shader/x-fragment">
-			// FRAGMENT SHADER
+
+			// fragment shader
+			#ifdef gl_es
 			precision mediump float;
+			#endif
 
 			void main() {
 				gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 			}
+
 		</script>
 
 		<script id="vert-shader" type="x-shader/x-vertex">
+
 			// VERTEX SHADER
 			attribute vec3 vertexPos;
 
@@ -28,8 +33,9 @@
 			uniform mat4 proj;
 
 			void main() {
-				gl_Position = proj * modelView * vec4(aVertexPosition, 1.0);
+				gl_Position = proj * mView * vec4(vertexPos, 1.0);
 			}
+
 		</script>
 
 	</head>

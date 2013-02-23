@@ -1,15 +1,21 @@
 /*global yepnope:true, APP:true, THREE:true */
+/*jshint bitwise: false */
 
 // initialize global variables
-var gl;
 var APP = APP || {};
-
-
 var included = [
     'js/Klass.js',
     'js/Tests.js',
     'js/MatStack.js'
 ];
+
+var gl,
+    canvas,
+    shaderProgram,
+    mView,
+    proj,
+    triVertPosBuf,
+    squVertPosBuf;
 
 
 function initGL(canvas) {
@@ -26,6 +32,7 @@ function initGL(canvas) {
 }
 
 function createShader(type, id) {
+    'use strict';
     // get the HTML element containing the shader
     var src = document.getElementById(id);
     if (!src) {
@@ -36,10 +43,10 @@ function createShader(type, id) {
     }
 
     // dump the shader text into a string
-    str = '';
+    var str = '';
     var text = src.firstChild;
     while (text) {
-        if (text.nodeType == 3) {
+        if (text.nodeType === 3) {
             str += text.textContent;
         }
         text = text.nextSibling;
@@ -51,17 +58,21 @@ function createShader(type, id) {
     gl.compileShader(shader);
 
     // if there was a problem creating the shader, alert the user
-    if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        alert(gl.getShaderInfoLog(shader));
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.log(str);
+        console.log(gl.getShaderInfoLog(shader));
+        alert(id + ' failed to compile');
         return null;
+    }
+    else {
+        console.log(id + ' compiled successfully');
     }
 
     return shader;
 }
 
-var shaderProgram;
-
 function initShaders() {
+    'use strict';
     var frag = createShader(gl.FRAGMENT_SHADER, "frag-shader");
     var vert = createShader(gl.VERTEX_SHADER, "vert-shader");
 
@@ -77,26 +88,26 @@ function initShaders() {
 
     gl.useProgram(shaderProgram);
 
-    shaderProgram.vertexPosAttrib = gl.getAttribLocation(shaderProgram, 'vertextPos');
+    shaderProgram.vertexPosAttrib = gl.getAttribLocation(shaderProgram, 'vertexPos');
     gl.enableVertexAttribArray(shaderProgram.vertexPosAttrib);
 
     shaderProgram.mView = gl.getUniformLocation(shaderProgram, 'mView');
     shaderProgram.proj = gl.getUniformLocation(shaderProgram, 'proj');
 }
 
-var mView;
-var proj;
 
 function setMatrixUniforms() {
-    gl.uniformMatrix4fv(shaderProgram.proj, false, proj);
-    gl.uniformMatrix4fv(shaderProgram.mView, false, mView);
+    'use strict';
+    var projFlat = [], mViewFlat = [];
+    proj.flattenToArray(projFlat);
+    mView.active.flattenToArray(mViewFlat);
+    gl.uniformMatrix4fv(shaderProgram.proj, false, new Float32Array(projFlat));
+    gl.uniformMatrix4fv(shaderProgram.mView, false, new Float32Array(mViewFlat));
 }
 
 
-var triVertPosBuf;
-var squVertPosBuf;
-
 function initBuffers() {
+    'use strict';
     triVertPosBuf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, triVertPosBuf);
     var vertices = [
@@ -118,39 +129,45 @@ function initBuffers() {
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     squVertPosBuf.itemSize = 3;
-    squVertPosBuf.numItems = 3;
+    squVertPosBuf.numItems = 4;
 }
 
 function drawScene() {
-    proj = (new THREE.Matrix4()).makePerspective(50, gl.viewportWidth / gl.viewportHeight, 0.0, 10.0);
-    mView = new THREE.Matrix4();
+    'use strict';
+    proj.makePerspective(50, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
+    mView.active.identity();
 
-    gl.viewport(0.0, gl.viewportWidth, gl.viewportHeight);
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    mView.translate(new THREE.Vector3(-1.5, 0.0, -7.0));
+    mView.active.translate(new THREE.Vector3(-1.5, 0.0, -7.0));
+
+    mView.push();
+    mView.active.rotateY( 0.005 * (new Date().getTime()));
     gl.bindBuffer(gl.ARRAY_BUFFER, triVertPosBuf);
-    gl.vertexAttribPointer(shaderProgram.vertexAttribPointer, triVertPosBuf.itemSize, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(shaderProgram.vertexPosAttrib, triVertPosBuf.itemSize, gl.FLOAT, false, 0, 0);
     setMatrixUniforms();
     gl.drawArrays(gl.TRIANGLES, 0, triVertPosBuf.numItems);
+    mView.pop();
 
-    mView.translate(new THREE.Vector3(3.0, 0.0, 0.0));
+    mView.active.translate(new THREE.Vector3(3.0, 0.0, 0.0));
     gl.bindBuffer(gl.ARRAY_BUFFER, squVertPosBuf);
-    gl.vertexAttribPointer(shaderProgram.vertexAttribPointer, squVertPosBuf.itemSize, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(shaderProgram.vertexPosAttrib, squVertPosBuf.itemSize, gl.FLOAT, false, 0, 0);
     setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 0, squVertPosBuf.numItems);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, squVertPosBuf.numItems);
 
-
+    window.requestAnimationFrame(drawScene);
 }
 
 function init() {
     'use strict';
 
     // before doing anything, run tests (stored in Tests.js)
-    console.log('running tests...');
-    APP.runTests();
+    //APP.runTests();
 
-    var canvas = document.getElementById('myCanvas');
+    canvas = document.getElementById('myCanvas');
+    mView = new APP.MatStack();
+    proj = new THREE.Matrix4();
 
     initGL(canvas); // init GL context
     initShaders();

@@ -8,3 +8,6 @@
 
 - [JavaScript Patterns](http://shop.oreilly.com/product/9780596806767.do)
   - Modeled my 'Klass' object after one of their examples
+
+- [three.js](http://mrdoob.github.com/three.js/ "three.js library")
+  - I make use of the three.js matrix library in my project, mainly because of its stellar documentation
