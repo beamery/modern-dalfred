@@ -25,6 +25,6 @@ APP.Terrain = APP.Klass(null, {
 
     draw: function() {
         'use strict';
-        this.mesh.draw();
+        this.mesh.draw(true);
     }
 });

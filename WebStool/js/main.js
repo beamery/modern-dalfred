@@ -9,7 +9,9 @@ var included = [
     'js/MatStack.js',
     'js/Mesh.js',
     'js/Terrain.js',
-    'js/Scene.js'
+    'js/Scene.js',
+    'js/Disk.js'
+
 ];
 
 var gl,
@@ -136,7 +138,7 @@ function drawScene() {
     'use strict';
 
     // reset the modelview and projection matrices
-    proj.makePerspective(50, gl.viewportWidth / gl.viewportHeight, 0.1, 50.0);
+    proj.makePerspective(50, canvas.width / canvas.height, 0.1, 50.0);
     mvs.active.identity();
 
     // update the viewport and clear the screen
@@ -149,13 +151,13 @@ function drawScene() {
     // draw the scene
     mvs.push();
 
-    mvs.active.rotateY(3 * Math.PI / 4);
+    //mvs.active.rotateY(3 * Math.PI / 4);
     //mvs.active.rotateY( 0.005 * (new Date().getTime()));
     gl.bindBuffer(gl.ARRAY_BUFFER, triVertPosBuf);
     gl.vertexAttribPointer(APP.shaderProgram.vertexPosAttrib, triVertPosBuf.itemSize, gl.FLOAT, false, 0, 0);
     APP.setMatrixUniforms();
     //gl.drawArrays(gl.TRIANGLES, 0, triVertPosBuf.numItems);
-    scene.draw();
+    scene.draw(mvs);
 
     mvs.pop();
 
@@ -166,6 +168,9 @@ function drawScene() {
  */
 function tick() {
     'use strict';
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
     drawScene();
     window.requestAnimationFrame(tick);
 }
@@ -186,12 +191,9 @@ function init() {
 
     // only if WebGL is available
     if (gl) {
-        gl.viewportWidth = canvas.width;
-        gl.viewportHeight = canvas.height;
         gl.clearColor(0.2, 0.2, 0.2, 1.0);
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);
-
 
         scene = new APP.Scene();
         tick();

@@ -77,7 +77,7 @@ APP.Mesh = APP.Klass(null, {
                 }
             }
         }
-        this._initBuffers();
+        this._initBuffer();
         this._initWireframe(grid);
 
     },
@@ -85,7 +85,7 @@ APP.Mesh = APP.Klass(null, {
     /**
      * create a GL vertex buffer for this mesh
      */
-    _initBuffers: function() {
+    _initBuffer: function() {
         'use strict';
         this.vxPosBuf = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.vxPosBuf);
@@ -122,18 +122,21 @@ APP.Mesh = APP.Klass(null, {
             }
         }
 
-        // Add one extra vertex, which avoids the case in which the second
-        // zig-zag causes a diagonal line across the mesh
-        if (grid.length % 2 === 1) {
-            this.wireframeVxs.push(grid[0][grid.length - 1].x);
-            this.wireframeVxs.push(grid[0][grid.length - 1].y);
-            this.wireframeVxs.push(grid[0][grid.length - 1].z);
-        }
+        // Retrace back to the first vertex, avoiding the case in which the
+        // second zig-zag causes a diagonal line across the mesh
+        /*
+        if (grid.length % 2 === 0) {
+            for (i = grid.length - 1; i >= 0; i--) {
+                this.wireframeVxs.push(grid[i][grid.length - 1].x);
+                this.wireframeVxs.push(grid[i][grid.length - 1].y);
+                this.wireframeVxs.push(grid[i][grid.length - 1].z);
+            }
+        }*/
 
         // store the second zig-zag
-        for (i = 0; i < grid.length; i++) {
-            for (j = 0; j < grid[0].length; j++) {
-                if (i % 2 === 0) {
+        for (i = grid[0].length - 1; i >= 0; i--) {
+            for (j = grid.length - 1; j >= 0; j--) {
+                if (i % 2 === 1) {
                     this.wireframeVxs.push(grid[j][i].x);
                     this.wireframeVxs.push(grid[j][i].y);
                     this.wireframeVxs.push(grid[j][i].z);
@@ -145,16 +148,26 @@ APP.Mesh = APP.Klass(null, {
                 }
             }
         }
+        this._initWireframeBuffer();
+    },
+
+    /**
+     * Initialize GL buffer for the wireframe mesh
+     */
+    _initWireframeBuffer: function() {
+        'use strict';
         this.wireframeVxBuf = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.wireframeVxBuf);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.wireframeVxs), gl.STATIC_DRAW);
         this.wfItemSize = 3;
         this.wfNumItems = this.wireframeVxs.length / 3;
+        
     },
 
-    draw: function() {
+    draw: function(wireframe) {
         'use strict';
-        if (!APP.wireframe) {
+        wireframe = wireframe || APP.wireframe;
+        if (!wireframe) {
             gl.bindBuffer(gl.ARRAY_BUFFER, this.vxPosBuf);
             gl.vertexAttribPointer(APP.shaderProgram.vertexPosAttrib, this.itemSize, gl.FLOAT, false, 0, 0);
             APP.setMatrixUniforms();
@@ -166,6 +179,7 @@ APP.Mesh = APP.Klass(null, {
 
             // if we're drawing a wireframe, we should be able to see through it
             gl.disable(gl.DEPTH_TEST);
+            APP.setMatrixUniforms();
             gl.drawArrays(gl.LINE_STRIP, 0, this.wfNumItems);
             gl.enable(gl.DEPTH_TEST);
         }
