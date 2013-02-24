@@ -6,17 +6,21 @@ var APP = APP || {};
 var included = [
     'js/Klass.js',
     'js/Tests.js',
-    'js/MatStack.js'
+    'js/MatStack.js',
+    'js/Mesh.js',
+    'js/Terrain.js',
+    'js/Scene.js'
 ];
 
 var gl,
     canvas,
-    shaderProgram,
-    mView,
+    mvs,
     proj,
     triVertPosBuf,
-    squVertPosBuf;
+    scene;
 
+APP.shaderProgram = null;
+APP.wireframe = true;
 
 function initGL(canvas) {
     'use strict';
@@ -77,35 +81,43 @@ function initShaders() {
     var vert = createShader(gl.VERTEX_SHADER, "vert-shader");
 
     // create the program, attach the shaders, and then link the program
-    shaderProgram = gl.createProgram();
-    gl.attachShader(shaderProgram, vert);
-    gl.attachShader(shaderProgram, frag);
-    gl.linkProgram(shaderProgram);
+    APP.shaderProgram = gl.createProgram();
+    gl.attachShader(APP.shaderProgram, vert);
+    gl.attachShader(APP.shaderProgram, frag);
+    gl.linkProgram(APP.shaderProgram);
 
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+    // check whether or not shaders linked correctly
+    if (!gl.getProgramParameter(APP.shaderProgram, gl.LINK_STATUS)) {
         alert('Could not initialize shaders');
     }
 
-    gl.useProgram(shaderProgram);
+    gl.useProgram(APP.shaderProgram);
 
-    shaderProgram.vertexPosAttrib = gl.getAttribLocation(shaderProgram, 'vertexPos');
-    gl.enableVertexAttribArray(shaderProgram.vertexPosAttrib);
+    // get a handle for the vertexPos shader attribute
+    APP.shaderProgram.vertexPosAttrib = gl.getAttribLocation(APP.shaderProgram, 'vertexPos');
+    gl.enableVertexAttribArray(APP.shaderProgram.vertexPosAttrib);
 
-    shaderProgram.mView = gl.getUniformLocation(shaderProgram, 'mView');
-    shaderProgram.proj = gl.getUniformLocation(shaderProgram, 'proj');
+    // get a handle for the mView and proj shader uniforms
+    APP.shaderProgram.mView = gl.getUniformLocation(APP.shaderProgram, 'mView');
+    APP.shaderProgram.proj = gl.getUniformLocation(APP.shaderProgram, 'proj');
 }
 
 
-function setMatrixUniforms() {
+APP.setMatrixUniforms = function() {
     'use strict';
+    // flatten modelview and projection matrices for use in shaders
     var projFlat = [], mViewFlat = [];
     proj.flattenToArray(projFlat);
-    mView.active.flattenToArray(mViewFlat);
-    gl.uniformMatrix4fv(shaderProgram.proj, false, new Float32Array(projFlat));
-    gl.uniformMatrix4fv(shaderProgram.mView, false, new Float32Array(mViewFlat));
-}
+    mvs.active.flattenToArray(mViewFlat);
+
+    // push the values of our modelview and projection matrices into their
+    // shader locations
+    gl.uniformMatrix4fv(APP.shaderProgram.proj, false, new Float32Array(projFlat));
+    gl.uniformMatrix4fv(APP.shaderProgram.mView, false, new Float32Array(mViewFlat));
+};
 
 
+// test function, not to be used in production
 function initBuffers() {
     'use strict';
     triVertPosBuf = gl.createBuffer();
@@ -118,45 +130,44 @@ function initBuffers() {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
     triVertPosBuf.itemSize = 3;
     triVertPosBuf.numItems = 3;
-
-    squVertPosBuf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, squVertPosBuf);
-    vertices = [
-         1.0,  1.0,  0.0,
-        -1.0,  1.0,  0.0,
-         1.0, -1.0,  0.0,
-        -1.0, -1.0,  0.0
-    ];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-    squVertPosBuf.itemSize = 3;
-    squVertPosBuf.numItems = 4;
 }
 
 function drawScene() {
     'use strict';
-    proj.makePerspective(50, gl.viewportWidth / gl.viewportHeight, 0.1, 1000.0);
-    mView.active.identity();
 
-    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    // reset the modelview and projection matrices
+    proj.makePerspective(50, gl.viewportWidth / gl.viewportHeight, 0.1, 50.0);
+    mvs.active.identity();
+
+    // update the viewport and clear the screen
+    gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    mView.active.translate(new THREE.Vector3(-1.5, 0.0, -7.0));
+    // move whole scene so that we can see it
+    mvs.active.translate(new THREE.Vector3(0.0, -2.0, -7.0));
 
-    mView.push();
-    mView.active.rotateY( 0.005 * (new Date().getTime()));
+    // draw the scene
+    mvs.push();
+
+    mvs.active.rotateY(3 * Math.PI / 4);
+    //mvs.active.rotateY( 0.005 * (new Date().getTime()));
     gl.bindBuffer(gl.ARRAY_BUFFER, triVertPosBuf);
-    gl.vertexAttribPointer(shaderProgram.vertexPosAttrib, triVertPosBuf.itemSize, gl.FLOAT, false, 0, 0);
-    setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLES, 0, triVertPosBuf.numItems);
-    mView.pop();
+    gl.vertexAttribPointer(APP.shaderProgram.vertexPosAttrib, triVertPosBuf.itemSize, gl.FLOAT, false, 0, 0);
+    APP.setMatrixUniforms();
+    //gl.drawArrays(gl.TRIANGLES, 0, triVertPosBuf.numItems);
+    scene.draw();
 
-    mView.active.translate(new THREE.Vector3(3.0, 0.0, 0.0));
-    gl.bindBuffer(gl.ARRAY_BUFFER, squVertPosBuf);
-    gl.vertexAttribPointer(shaderProgram.vertexPosAttrib, squVertPosBuf.itemSize, gl.FLOAT, false, 0, 0);
-    setMatrixUniforms();
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, squVertPosBuf.numItems);
+    mvs.pop();
 
-    window.requestAnimationFrame(drawScene);
+}
+
+/**
+ * This is the main program loop.
+ */
+function tick() {
+    'use strict';
+    drawScene();
+    window.requestAnimationFrame(tick);
 }
 
 function init() {
@@ -166,7 +177,7 @@ function init() {
     //APP.runTests();
 
     canvas = document.getElementById('myCanvas');
-    mView = new APP.MatStack();
+    mvs = new APP.MatStack();
     proj = new THREE.Matrix4();
 
     initGL(canvas); // init GL context
@@ -177,12 +188,14 @@ function init() {
     if (gl) {
         gl.viewportWidth = canvas.width;
         gl.viewportHeight = canvas.height;
-        gl.clearColor(0.2, 0.3, 0.2, 1.0);
+        gl.clearColor(0.2, 0.2, 0.2, 1.0);
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc(gl.LEQUAL);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+
+        scene = new APP.Scene();
+        tick();
     }
-    drawScene();
 }
 
 yepnope({

@@ -6,6 +6,7 @@ APP.runTests = function() {
     'use strict';
     console.log('running tests...');
     APP._testMatStack();
+    //APP._testMesh();
 };
 
 APP._testMatStack = function() {
@@ -63,4 +64,18 @@ APP._testMatStack = function() {
     
     matStack.print();
     console.log('-');
+};
+
+APP._testMesh = function() {
+    'use strict';
+    var vxs = [];
+    for (var i = 0; i < 5; i++) {
+        var tmp = [];
+        for (var j = 0; j < 5; j++) {
+            tmp.push(new THREE.Vector3(j, 0, i));
+        }
+        vxs.push(tmp);
+    }
+    var mesh = new APP.Mesh(vxs);
+    mesh.draw(true);
 };
