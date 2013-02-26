@@ -82,11 +82,17 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MatrixStack.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="VertexAttributes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MatrixStack.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="VertexAttributes.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="basic_shader.frag" />
+    <None Include="basic_shader.vert" />
     <None Include="README.md" />
     <None Include="SOURCES.md" />
   </ItemGroup>
