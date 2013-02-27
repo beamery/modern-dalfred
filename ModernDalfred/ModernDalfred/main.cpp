@@ -1,44 +1,45 @@
+/*
+ * Brian Murray
+ * CS 559 Project 2
+ */
+
 #include <iostream>
+#include <assert.h>
+#include <vector>
+#include <gl/glew.h>
 #include <gl/freeglut.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp> 
-#include "MatrixStack.h"
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Scene.h"
+#include "Shader.h"
 
 using namespace std;
+using namespace glm;
 
-struct WindowData
-{
-	GLint height, width;
-	GLint handle;
+struct Window {
+	int window_handle;
+	ivec2 size;
+	float window_aspect;
+	vector<string> instructions;
 } window;
 
-MatrixStack mvs;
+Scene scene;
+Shader shader;
 
-void DisplayFunc()
-{
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-
-	glViewport(0, 0, window.width, window.height);
-
-
-	glutSwapBuffers();
-	glutPostRedisplay();
-}
-
-void ReshapeFunc(GLint w, GLint h)
-{
-	if (h > 0)
+void ReshapeFunc(int w, int h) {
+	if (window.window_handle != -1 &&  h > 0)
 	{
-		window.height = h;
-		window.width = w;
+		window.size = ivec2(w, h);
+		window.window_aspect = float(w) / float(h);
 	}
 }
 
-void KeyboardFunc(unsigned char c, int x, int y)
-{
+void KeyboardFunc(unsigned char c, int x, int y) {
+	if (window.window_handle == -1)
+		return;
+
 	switch (c)
 	{
 	case 'x':
@@ -48,16 +49,79 @@ void KeyboardFunc(unsigned char c, int x, int y)
 	}
 }
 
-int main(int argc, char * argv[])
-{
-	cout << "Hello World" << endl;
-	glutInit(&argc , argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
-	glutInitWindowSize(window.width , window.height);
-	window.handle = glutCreateWindow("Hello World");
-	glutDisplayFunc(DisplayFunc);
-	glutReshapeFunc(ReshapeFunc);
-	glutKeyboardFunc(KeyboardFunc);
+void SpecialFunc(int c, int x, int y) {
+}
 
+void DisplayInstructions() {
+	if (window.window_handle == -1)
+		return;
+
+	vector<string> * s = &window.instructions;
+	glDisable(GL_LIGHTING);
+	glDisable(GL_TEXTURE_2D);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, window.size.x, 0, window.size.y, 1, 10);
+	glViewport(0, 0, window.size.x, window.size.y);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslated(10, 18 * s->size(), -5.5);
+	glScaled(0.1, 0.1, 1.0);
+	for (auto i = s->begin(); i < s->end(); ++i)
+	{
+		glPushMatrix();
+		glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char *) (*i).c_str());
+		glPopMatrix();
+		glTranslated(0, -150, 0);
+	}
+}
+
+void DisplayFunc() {
+	if (window.window_handle == -1)
+		return;
+
+	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
+	mat4 projection = perspective(50.0f, window.window_aspect, 1.0f, 10.0f);
+	mat4 modelview = lookAt(vec3(0.0f, 0.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	glViewport(0, 0, window.size.x, window.size.y);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	scene.draw(shader, modelview, projection, window.size, time);
+	
+	//DisplayInstructions();
+	glutSwapBuffers();
+	glutPostRedisplay();
+}
+
+void initShaders() {
+	shader.Initialize("pattern_shader.vert", "pattern_shader.frag");
+}
+
+void initScene() {
+	scene.init();
+}
+
+
+int main(int argc, char * argv[]) {
+	glutInit(&argc, argv);
+	glutInitWindowSize(1280, 720);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+
+	window.window_handle = glutCreateWindow("Modern Hello World");
+	glutReshapeFunc(ReshapeFunc);
+	glutDisplayFunc(DisplayFunc);
+	glutKeyboardFunc(KeyboardFunc);
+	glutSpecialFunc(SpecialFunc);
+
+	window.instructions.push_back("Brian Murray - CS 559 Project 2");
+
+	if (glewInit() != GLEW_OK)
+	{
+		cerr << "GLEW failed to initialize." << endl;
+		return 0;
+	}
+	initShaders();
+	initScene();
 	glutMainLoop();
 }

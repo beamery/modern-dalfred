@@ -1,18 +1,48 @@
-#ifndef SHADER_H
-#define SHADER_H
+/*	Perry Kivolowitz - University of Wisconsin - Madison 
+	Computer Sciences Department
 
-#include <gl/freeglut.h>
+	A sample hello world like program demonstrating modern
+	OpenGL techniques. 
+
+	Created:	2/25/13
+	Updates:
+*/
+
+#pragma once
+#include <iostream>
+#include <sstream>
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Utils.h"
 
 class Shader {
 public:
-	// create a shader program with the given vertex and fragment shaders
-	Shader(const char *vert, const char *frag);
+	Shader();
+	void TakeDown();
+	void Use();
+	virtual bool Initialize(char * vertex_shader_file, char * fragment_shader_file);
+	virtual void CustomSetup();
+	void CommonSetup(const float time, const GLint * size, const GLfloat * mvp);
+	std::stringstream GetShaderLog(GLuint shader_id);
 
-	void use();
+	GLuint vertex_shader_id;
+	GLuint fragment_shader_id;
+	GLuint program_id;
+
+protected:
+	GLuint modelview_matrix_handle;
+	GLuint projection_matrix_handle;
+	GLuint normal_matrix_handle;
+	GLuint mvp_handle;
+	GLuint size_handle;
+	GLuint time_handle;
+
+
+	bool LoadShader(const char * file_name, GLuint shader_id);
 
 private:
-	GLuint createShader(const char *src, GLenum type);
+	typedef Shader super;
 };
-
-
-#endif

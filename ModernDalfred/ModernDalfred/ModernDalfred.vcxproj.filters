@@ -22,18 +22,30 @@
     <Filter Include="Docs">
       <UniqueIdentifier>{2f03390d-bbc1-4ad2-b000-4e2f428353c3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Models">
+      <UniqueIdentifier>{c8d5ab8b-f191-4011-b52f-4a4bfd027083}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MatrixStack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VertexAttributes.cpp">
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,7 +56,16 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VertexAttributes.h">
+    <ClInclude Include="Triangle.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -55,10 +76,31 @@
     <None Include="README.md">
       <Filter>Docs</Filter>
     </None>
-    <None Include="basic_shader.frag">
+    <None Include="basic.frag">
       <Filter>Source Files\Shaders</Filter>
     </None>
-    <None Include="basic_shader.vert">
+    <None Include="basic.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="NOTES.md">
+      <Filter>Docs</Filter>
+    </None>
+    <None Include="pattern_shader.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="pattern_shader.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="play_shader.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="play_shader.vert">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="colored_shader.frag">
+      <Filter>Source Files\Shaders</Filter>
+    </None>
+    <None Include="colored_shader.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
   </ItemGroup>
