@@ -86,13 +86,15 @@ void DisplayFunc() {
 	if (window.window_handle == -1)
 		return;
 
+	glEnable(GL_DEPTH_TEST);
+
 	mvs.push();
 
 	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
 	mat4 projection = perspective(50.0f, window.window_aspect, 1.0f, 1000.0f);
 
 	// put camera 2m above the scene
-	mvs.active = translate(mvs.active, vec3(0.0f, -2.0f, 0.0f));
+	mvs.active = translate(mvs.active, vec3(0.0f, -2.5f, 0.0f));
 
 	glViewport(0, 0, window.size.x, window.size.y);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -108,7 +110,10 @@ void DisplayFunc() {
 }
 
 void initShaders() {
-	shader.init("colored_shader.vert", "colored_shader.frag");
+	shader.init("lighting.vert", "lighting.frag");
+	shader.getUniformLocation("lightPosition");
+	shader.getUniformLocation("Kd");
+	shader.getUniformLocation("Ld");
 }
 
 void initScene() {
@@ -123,7 +128,7 @@ void testMesh() {
 int main(int argc, char * argv[]) {
 	glutInit(&argc, argv);
 	glutInitWindowSize(1280, 720);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
 	window.window_handle = glutCreateWindow("Modern Hello World");
 	glutReshapeFunc(ReshapeFunc);

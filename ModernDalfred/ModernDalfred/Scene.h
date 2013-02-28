@@ -18,6 +18,7 @@
 #include "Mesh.h"
 #include "Grid.h"
 #include "Cube.h"
+#include "Triangle.h"
 
 using namespace std;
 using namespace glm;
@@ -33,6 +34,10 @@ public:
 private:
 	Grid *grid;
 	Cube cube;
+	Triangle t;
+
+	vec4 lightPos;
+	vec3 lightDiffuse;
 };
 
 

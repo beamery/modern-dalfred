@@ -1,6 +1,9 @@
 #include "Cube.h"
 
-Cube::Cube() : color(vec3(0.7f, 0.7f, 0.7f)) {}
+Cube::Cube() : color(vec3(0.7f, 0.7f, 0.7f)) {
+
+	materialDiffuse = vec3(0.0f, 1.0f, 1.0f);
+}
 
 bool Cube::init() {
 	// first, check for entry errors
@@ -96,7 +99,11 @@ bool Cube::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 
 	mat4 mvp = proj * mv;
 	shader.use();
+	shader.setUniform("mvMat", mv);
+	shader.setUniform("projMat", proj);
+	shader.setUniform("normalMat", transpose(inverse(mv)));
 	shader.setUniform("mvp", mvp);
+	shader.setUniform("Kd", materialDiffuse);
 
 	glBindVertexArray(vertexArrayHandle);
 
@@ -104,6 +111,8 @@ bool Cube::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 		glDrawArrays(GL_POINTS, 0, vertices.size());
 	else
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
+	glBindVertexArray(0);
 	
 	// check for exit errors
 	if (Utils::GLReturnedError("Cube::init - Error on entry"))

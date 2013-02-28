@@ -27,6 +27,8 @@ private:
 	GLuint vertexBufferHandle;
 	vector<VertexData> vertices;
 	vector<GLuint> indices;
+
+	vec3 Kd;
 };
 
 

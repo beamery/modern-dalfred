@@ -196,16 +196,20 @@ bool Mesh::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 	mat4 mvp = proj * mv;
 
 	shader.use();
+	shader.setUniform("mvMat", mv);
+	shader.setUniform("projMat", proj);
+	shader.setUniform("normalMat", transpose(inverse(mv)));
 	shader.setUniform("mvp", mvp);
 
-	glBindVertexArray(this->vertexArrayHandle);
-	//glBindVertexArray(this->flatShadedVertexArrayHandle);
+	//glBindVertexArray(this->vertexArrayHandle);
+	glBindVertexArray(this->flatShadedVertexArrayHandle);
 
 	if (drawPoints)
 		glDrawArrays(GL_POINTS, 0, vertices.size());
 	else
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
+	glBindVertexArray(0);
 
 	// check for exit errors
 	if (Utils::GLReturnedError("Mesh::init - Error on exit"))
@@ -238,7 +242,7 @@ vec3 Mesh::calcNormFromTriangle(int i1, int i2, int i3, vector<VertexData> &vert
 	vec3 v1 = verts[i1].position;
 	vec3 v2 = verts[i2].position;
 	vec3 v3 = verts[i3].position;
-	vec3 norm = cross((v2 - v1), (v3 - v1));
+	vec3 norm = cross((v3 - v1), (v2 - v1));
 	norm = normalize(norm);
 
 	return norm;

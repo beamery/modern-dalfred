@@ -105,10 +105,10 @@
     <ClInclude Include="VertexData.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="basic.frag" />
-    <None Include="basic.vert" />
     <None Include="colored_shader.frag" />
     <None Include="colored_shader.vert" />
+    <None Include="lighting.frag" />
+    <None Include="lighting.vert" />
     <None Include="NOTES.md" />
     <None Include="pattern_shader.frag" />
     <None Include="pattern_shader.vert" />

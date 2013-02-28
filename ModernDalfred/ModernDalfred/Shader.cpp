@@ -82,9 +82,9 @@ bool Shader::init(char * vertex_shader_file, char * fragment_shader_file)
 	glDeleteShader(vertex_shader_id);
 	glDeleteShader(fragment_shader_id);
 
-	this->getUniformLocation("modelview_matrix");
-	this->getUniformLocation("projection_matrix");
-	this->getUniformLocation("normal_matrix");
+	this->getUniformLocation("mvMat");
+	this->getUniformLocation("projMat");
+	this->getUniformLocation("normalMat");
 	this->getUniformLocation("mvp");
 	this->getUniformLocation("size");
 	this->getUniformLocation("time");
@@ -92,8 +92,7 @@ bool Shader::init(char * vertex_shader_file, char * fragment_shader_file)
 	return !Utils::GLReturnedError("Shader::Initialize - on exit");
 }
 
-void Shader::customSetup()
-{
+void Shader::customSetup() {
 }
 
 

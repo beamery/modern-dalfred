@@ -19,3 +19,9 @@ Generating meshes
 
 - With this implementation, the triangles will not actually be used for rendering, but will
   simply be a way to grab a normal vector
+
+
+Adding some inheritance
+-------------------------
+- Right now, I have a lot of redundant code in the drawable objects
+  - At some point, I'd like to encapsulate that into an inheritance tree

@@ -29,8 +29,9 @@ private:
 	GLuint vertexArrayHandle;
 	GLuint vertexBufferHandle;
 	vector<VertexData> vertices;
-	vec3 color;
 
+	vec3 color;
+	vec3 materialDiffuse;
 };
 
 

@@ -28,6 +28,8 @@ public:
 private:
 	Mesh mesh;
 	vector<VertexData> data;
+
+	vec3 materialDiffuse;
 };
 
 
