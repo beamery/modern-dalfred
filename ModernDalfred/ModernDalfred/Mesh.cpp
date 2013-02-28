@@ -5,6 +5,9 @@ bool Mesh::drawPoints = false;
 Mesh::Mesh() {}
 
 bool Mesh::init(vector<VertexData> &verts, int rows, int cols) {
+	// first, check for entry errors
+	if (Utils::GLReturnedError("Mesh::init - Error on entry"))
+		return false;
 
 	initVertexData(verts, rows, cols);
 
@@ -14,9 +17,6 @@ bool Mesh::init(vector<VertexData> &verts, int rows, int cols) {
 	//herpDerp.push_back(VertexData(vec3(0.0f, 1.0f, 0.0f), vec3(1, 1, 1), vec3(0, 0, 1)));
 	//vertices = herpDerp;
 
-	// first, check for entry errors
-	if (Utils::GLReturnedError("Mesh::init - Error on entry"))
-		return false;
 
 	// initialize vertex array
 	glGenVertexArrays(1, &vertexArrayHandle);

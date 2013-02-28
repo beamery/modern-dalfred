@@ -90,7 +90,9 @@ void DisplayFunc() {
 
 	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
 	mat4 projection = perspective(50.0f, window.window_aspect, 1.0f, 1000.0f);
-	mvs.active = translate(mvs.active, vec3(0.0f, 0.0f, -5.0f));
+
+	// put camera 2m above the scene
+	mvs.active = translate(mvs.active, vec3(0.0f, -2.0f, 0.0f));
 
 	glViewport(0, 0, window.size.x, window.size.y);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);

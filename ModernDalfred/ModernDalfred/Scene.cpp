@@ -8,14 +8,28 @@ Scene::~Scene() {
 
 
 void Scene::init() {
-	grid = new Grid(3);	
+	grid = new Grid(GRID_SIZE);	
+	cube.init();
 }
 
 
 void Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, 
 				 const ivec2 &size, const float time) {
+	shader.use();
+	shader.setUniform("time", time);
+	shader.setUniform("size", size);
 
-	//triangle.draw(shader, mv, proj, size, time);
-	grid->draw(shader, mvs, proj);
+	mvs.push();
+
+	mvs.active = scale(mvs.active, vec3(WORLD_UNITS_PER_METER, WORLD_UNITS_PER_METER, WORLD_UNITS_PER_METER));
+
+	grid->draw(shader, mvs.active, proj);
+
+	mvs.active = translate(mvs.active, vec3(0.0f, 2.0f, -5.0f));
+	mvs.active = rotate(mvs.active, time * 20, vec3(0.0f, 1.0f, 0.0f));
+	mvs.active = rotate(mvs.active, 45.0f, vec3(1.0f, 1.0f, 1.0f));
+	cube.draw(shader, mvs.active, proj);
+
+	mvs.pop();
 }
 

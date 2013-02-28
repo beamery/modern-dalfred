@@ -1,5 +1,5 @@
-#ifndef GRID_H
-#define GRID_H
+#ifndef CUBE_H
+#define CUBE_H
 
 #include <iostream>
 #include <vector>
@@ -13,21 +13,24 @@
 #include "Utils.h"
 #include "Shader.h"
 #include "Mesh.h"
-#include "MatrixStack.h"
 
 using namespace std;
 using namespace glm;
 
-class Grid {
+class Cube {
 
 public:
-	Grid(int size);
-
-	bool draw(Shader &shader,  mat4 &mv, const mat4 &proj);
+	Cube();
+	bool init();
+	bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
 
 private:
-	Mesh mesh;
-	vector<VertexData> data;
+	void initVertices();
+	GLuint vertexArrayHandle;
+	GLuint vertexBufferHandle;
+	vector<VertexData> vertices;
+	vec3 color;
+
 };
 
 
