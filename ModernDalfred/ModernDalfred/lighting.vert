@@ -7,7 +7,9 @@ layout (location = 2) in vec3 vertexNormal;
 out vec3 lightIntensity;
 
 uniform vec4 lightPosition;
-uniform vec3 Kd; // material diffuse 
+uniform vec3 Ka; // material ambient reflection
+uniform vec3 La; // light ambient intensity
+uniform vec3 Kd; // material diffuse reflection
 uniform vec3 Ld; // light diffuse intensity
 
 uniform mat4 mvMat;
@@ -25,6 +27,8 @@ void main() {
 
     // apply the diffuse equation
     lightIntensity = Ld * Kd * max(dot(posToLight, eyeNorm), 0.0);
+
+    lightIntensity += La * Ka;
 
     // pass along vertex position
     gl_Position = mvp * vec4(vertexPosition, 1.0);

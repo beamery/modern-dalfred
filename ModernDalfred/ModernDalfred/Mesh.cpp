@@ -169,12 +169,14 @@ void Mesh::initVertexData(vector<VertexData> &verts, int rows, int cols) {
 
 		}
 
-		// Go through and give 'vertices' the correct normals
-		for (auto i = smoothNorms.begin(); i != smoothNorms.end(); i++) {
-			vec3 normal = getAveragedNormal(i->norms);
-			for (auto j = i->indices.begin(); j != i->indices.end(); j++) {
-				vertices[*j].normal = normal;
-			}
+	}
+
+	// Go through and give 'vertices' the correct normals
+	for (auto i = smoothNorms.begin(); i != smoothNorms.end(); i++) {
+		vec3 normal = getAveragedNormal(i->norms);
+		cout << "Getting averaged normal for " << &i << endl;
+		for (auto j = i->indices.begin(); j != i->indices.end(); j++) {
+			vertices[*j].normal = normal;
 		}
 	}
 

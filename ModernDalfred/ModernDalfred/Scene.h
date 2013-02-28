@@ -38,6 +38,7 @@ private:
 
 	vec4 lightPos;
 	vec3 lightDiffuse;
+	vec3 lightAmbient;
 };
 
 

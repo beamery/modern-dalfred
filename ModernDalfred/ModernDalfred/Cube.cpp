@@ -3,6 +3,7 @@
 Cube::Cube() : color(vec3(0.7f, 0.7f, 0.7f)) {
 
 	materialDiffuse = vec3(0.0f, 1.0f, 1.0f);
+	materialAmbient = vec3(0.0f, 1.0f, 1.0f);
 }
 
 bool Cube::init() {
@@ -104,6 +105,7 @@ bool Cube::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 	shader.setUniform("normalMat", transpose(inverse(mv)));
 	shader.setUniform("mvp", mvp);
 	shader.setUniform("Kd", materialDiffuse);
+	shader.setUniform("Ka", materialAmbient);
 
 	glBindVertexArray(vertexArrayHandle);
 

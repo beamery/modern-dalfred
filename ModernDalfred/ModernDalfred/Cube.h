@@ -32,6 +32,7 @@ private:
 
 	vec3 color;
 	vec3 materialDiffuse;
+	vec3 materialAmbient;
 };
 
 

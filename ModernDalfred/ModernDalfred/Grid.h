@@ -30,6 +30,7 @@ private:
 	vector<VertexData> data;
 
 	vec3 materialDiffuse;
+	vec3 materialAmbient;
 };
 
 

@@ -13,6 +13,7 @@ void Scene::init() {
 	t.init();
 	lightPos = vec4(0.0f, 3.0f, 0.0f, 0.0f);
 	lightDiffuse = vec3(1.0f, 1.0f, 1.0f);
+	lightAmbient = vec3(0.2f, 0.2f, 0.3f);
 }
 
 
@@ -23,6 +24,7 @@ void Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	//shader.setUniform("size", size);
 	shader.setUniform("lightPosition", lightPos);
 	shader.setUniform("Ld", lightDiffuse);
+	shader.setUniform("La", lightAmbient);
 
 	mvs.push();
 

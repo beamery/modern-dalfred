@@ -114,6 +114,8 @@ void initShaders() {
 	shader.getUniformLocation("lightPosition");
 	shader.getUniformLocation("Kd");
 	shader.getUniformLocation("Ld");
+	shader.getUniformLocation("Ka");
+	shader.getUniformLocation("La");
 }
 
 void initScene() {
