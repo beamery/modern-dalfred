@@ -1,5 +1,5 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef GRID_H
+#define GRID_H
 
 #include <iostream>
 #include <vector>
@@ -9,24 +9,24 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Triangle.h"
+#include "VertexData.h"
+#include "Utils.h"
 #include "Shader.h"
 #include "Mesh.h"
-#include "Grid.h"
 
 using namespace std;
 using namespace glm;
 
-class Scene {
+class Grid {
 
 public:
-	Scene();
-	~Scene();
-	void init();
-	void draw(Shader &shader, mat4 &mv, const mat4 &proj, const ivec2 &size, const float time);
+	Grid(int size);
+
+	bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
 
 private:
-	Grid *grid;
+	Mesh mesh;
+	vector<VertexData> data;
 };
 
 

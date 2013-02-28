@@ -14,6 +14,8 @@
 
 #include "Scene.h"
 #include "Shader.h"
+#include "Mesh.h"
+#include "MatrixStack.h"
 
 using namespace std;
 using namespace glm;
@@ -27,6 +29,7 @@ struct Window {
 
 Scene scene;
 Shader shader;
+MatrixStack mvs;
 
 void ReshapeFunc(int w, int h) {
 	if (window.window_handle != -1 &&  h > 0)
@@ -95,12 +98,16 @@ void DisplayFunc() {
 }
 
 void initShaders() {
-	shader.Initialize("pattern_shader.vert", "pattern_shader.frag");
+	shader.init("colored_shader.vert", "colored_shader.frag");
 }
 
 void initScene() {
 	scene.init();
 }
+
+void testMesh() {
+}
+
 
 
 int main(int argc, char * argv[]) {

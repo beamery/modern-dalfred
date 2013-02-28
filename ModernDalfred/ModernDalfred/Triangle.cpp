@@ -55,9 +55,10 @@ bool Triangle::draw(Shader &shader, mat4 &mv, const mat4 &proj, const ivec2 &siz
 	mv = rotate(mv, time * 90.0f, vec3(0.0f, 1.0f, 0.0f));
 
 	mat4 mvp = proj * mv;
-	shader.Use();
-	shader.CommonSetup(time, value_ptr(size), value_ptr(mvp));
-	shader.CustomSetup();
+	shader.use();
+	shader.setUniform("mvp", mvp);
+	shader.setUniform("time", time);
+	shader.setUniform("size", size);
 
 	glBindVertexArray(vertexArrayHandle);
 	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, &this->indices[0]); 

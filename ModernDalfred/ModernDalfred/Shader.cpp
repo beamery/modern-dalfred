@@ -12,13 +12,13 @@ using namespace glm;
 
 Shader::Shader()
 {
+	uniforms["mvp"] = BAD_GL_VALUE;
+	uniforms["proj"] = BAD_GL_VALUE;
+	uniforms["mv"] = BAD_GL_VALUE;
+	uniforms["size"] = BAD_GL_VALUE;
 	this->vertex_shader_id = BAD_GL_VALUE;
 	this->fragment_shader_id = BAD_GL_VALUE;
 	this->program_id = BAD_GL_VALUE;
-	this->modelview_matrix_handle = BAD_GL_VALUE;
-	this->projection_matrix_handle = BAD_GL_VALUE;
-	this->normal_matrix_handle = BAD_GL_VALUE;
-	this->size_handle = BAD_GL_VALUE;
 }
 
 /*	This Shader() class implements or assumes a basic set of uniforms will be
@@ -27,18 +27,14 @@ Shader::Shader()
 	common values to the shader. Values unique to the derived class can be
 	loaded with the CustomShader() function.
 */
-
-void Shader::CommonSetup(const float time, const GLint * size, const GLfloat * mvp)
+void Shader::commonSetup(const float time, const vec2 &size, const mat4 &mvp)
 {
-	glUniform1f(this->time_handle, time);
-	glUniform2iv(this->size_handle, 1, size);
-	//glUniformMatrix4fv(this->projection_matrix_handle, 1, GL_FALSE, projection);
-	//glUniformMatrix4fv(this->modelview_matrix_handle, 1, GL_FALSE, modelview);
-	glUniformMatrix4fv(this->mvp_handle, 1, GL_FALSE, mvp);
-	//glUniformMatrix4fv(this->normal_matrix_handle, 1, GL_FALSE, nm);
+	setUniform("time", time);
+	setUniform("size", size);
+	setUniform("mvp", mvp);
 }
 
-void Shader::Use()
+void Shader::use()
 {
 	assert(this->program_id != BAD_GL_VALUE);
 	glUseProgram(this->program_id);
@@ -46,8 +42,7 @@ void Shader::Use()
 
 /*	The shader initialization code is lifted liberally from the GLSL 4.0 Cookbook.
 */
-
-bool Shader::Initialize(char * vertex_shader_file, char * fragment_shader_file)
+bool Shader::init(char * vertex_shader_file, char * fragment_shader_file)
 {
 	GLint check_value;
 
@@ -55,12 +50,12 @@ bool Shader::Initialize(char * vertex_shader_file, char * fragment_shader_file)
 		return false;
 
 	this->vertex_shader_id = glCreateShader(GL_VERTEX_SHADER);
-	this->LoadShader(vertex_shader_file, this->vertex_shader_id);
+	this->loadShader(vertex_shader_file, this->vertex_shader_id);
 	glCompileShader(this->vertex_shader_id);
 	glGetShaderiv(this->vertex_shader_id, GL_COMPILE_STATUS, &check_value);
 	if (check_value != GL_TRUE)
 	{
-		cerr << this->GetShaderLog(vertex_shader_id).str();
+		cerr << this->getShaderLog(vertex_shader_id).str();
 		cerr << "GLSL compilation failed - vertex shader: " << vertex_shader_file << endl;
 		return false;
 	}
@@ -69,12 +64,12 @@ bool Shader::Initialize(char * vertex_shader_file, char * fragment_shader_file)
 		return false;
 
 	this->fragment_shader_id = glCreateShader(GL_FRAGMENT_SHADER);
-	this->LoadShader(fragment_shader_file, this->fragment_shader_id);
+	this->loadShader(fragment_shader_file, this->fragment_shader_id);
 	glCompileShader(this->fragment_shader_id);
 	glGetShaderiv(this->fragment_shader_id, GL_COMPILE_STATUS, &check_value);
 	if (check_value != GL_TRUE)
 	{
-		cerr << this->GetShaderLog(fragment_shader_id).str();
+		cerr << this->getShaderLog(fragment_shader_id).str();
 		cerr << "GLSL compilation failed - fragment shader: " << fragment_shader_file << endl;
 		return false;
 	}
@@ -87,26 +82,22 @@ bool Shader::Initialize(char * vertex_shader_file, char * fragment_shader_file)
 	glDeleteShader(vertex_shader_id);
 	glDeleteShader(fragment_shader_id);
 
-	glUseProgram(this->program_id);
-
-	this->modelview_matrix_handle = glGetUniformLocation(this->program_id, (const GLchar *) "modelview_matrix");
-	this->projection_matrix_handle = glGetUniformLocation(this->program_id, (const GLchar *) "projection_matrix");
-	this->normal_matrix_handle = glGetUniformLocation(this->program_id, (const GLchar *) "normal_matrix");
-	this->mvp_handle = glGetUniformLocation(this->program_id, (const GLchar *) "mvp");
-	this->size_handle = glGetUniformLocation(this->program_id, (const GLchar *) "size");
-	this->time_handle = glGetUniformLocation(this->program_id, (const GLchar *) "time");
-
-	glUseProgram(0);
+	this->getUniformLocation("modelview_matrix");
+	this->getUniformLocation("projection_matrix");
+	this->getUniformLocation("normal_matrix");
+	this->getUniformLocation("mvp");
+	this->getUniformLocation("size");
+	this->getUniformLocation("time");
 
 	return !Utils::GLReturnedError("Shader::Initialize - on exit");
 }
 
-void Shader::CustomSetup()
+void Shader::customSetup()
 {
 }
 
 
-void Shader::TakeDown()
+void Shader::takeDown()
 {
 	GLint temp;
 	GLsizei size;
@@ -135,8 +126,7 @@ void Shader::TakeDown()
 /*
 	This function is adapted from OpenGL 4.0 Shading Language Cookbook by David Wolff.
 */
-
-bool Shader::LoadShader(const char * file_name, GLuint shader_id)
+bool Shader::loadShader(const char * file_name, GLuint shader_id)
 {
 	assert(file_name != NULL);
 	if (Utils::GLReturnedError("Shader::LoadShader - on entrance"))
@@ -165,8 +155,7 @@ bool Shader::LoadShader(const char * file_name, GLuint shader_id)
 /*
 	This function is adapted from OpenGL 4.0 Shading Language Cookbook by David Wolff.
 */
-
-stringstream Shader::GetShaderLog(GLuint shader_id)
+stringstream Shader::getShaderLog(GLuint shader_id)
 {
 	stringstream s;
 	GLint log_length;
@@ -182,4 +171,108 @@ stringstream Shader::GetShaderLog(GLuint shader_id)
 		delete [] buffer;
 	}
 	return s;
+}
+
+/*
+ * Get a uniform location for this named uniform. Also stores the handle
+ * in a map, accessible by the uniform name. Handles using and un-using
+ * the shader program internally.
+ */
+GLuint Shader::getUniformLocation(const char *name) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+
+	glUseProgram(this->program_id);
+
+	GLuint handle = glGetUniformLocation(program_id, (const GLchar*)name);
+
+	this->uniforms[name] = handle;
+
+	glUseProgram(0);
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+
+	return handle;
+}
+
+/*
+ * The following methods set the named uniform to whatever is passed in as
+ * the second parameter. The program must be in use to use these methods
+ */
+void Shader::setUniform(const char *name, const vec2 &v) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	
+	glUniform2fv(uniforms[name], 1, value_ptr(v));
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+}
+void Shader::setUniform(const char *name, const ivec2 &v) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	
+	glUniform2iv(uniforms[name], 1, value_ptr(v));
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+}
+void Shader::setUniform(const char *name, const vec3 &v) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	
+	glUniform3fv(uniforms[name], 1, value_ptr(v));
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+}
+void Shader::setUniform(const char *name, const vec4 &v) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	
+	glUniform4fv(uniforms[name], 1, value_ptr(v));
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+}
+
+void Shader::setUniform(const char *name, const mat4 &m) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	
+	glUniformMatrix4fv(uniforms[name], 1, GL_FALSE, value_ptr(m)); 
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+}
+
+void Shader::setUniform(const char *name, float val) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	
+	glUniform1f(uniforms[name], val);
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+}
+
+void Shader::setUniform(const char *name, int val) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	
+	glUniform1i(uniforms[name], val);
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+}
+
+void Shader::setUniform(const char *name, bool val) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	
+	glUniform1i(uniforms[name], val);
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
 }
