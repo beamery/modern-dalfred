@@ -45,6 +45,9 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 
 	switch (c)
 	{
+	case 'p':
+		Mesh::drawPoints = !Mesh::drawPoints;
+		break;
 	case 'x':
 	case 27:
 		glutLeaveMainLoop();
@@ -83,14 +86,19 @@ void DisplayFunc() {
 	if (window.window_handle == -1)
 		return;
 
+	mvs.push();
+
 	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
-	mat4 projection = perspective(50.0f, window.window_aspect, 1.0f, 10.0f);
-	mat4 modelview = lookAt(vec3(0.0f, 0.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f));
+	mat4 projection = perspective(50.0f, window.window_aspect, 1.0f, 1000.0f);
+	mvs.active = translate(mvs.active, vec3(0.0f, 0.0f, -5.0f));
+
 	glViewport(0, 0, window.size.x, window.size.y);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	scene.draw(shader, modelview, projection, window.size, time);
+	scene.draw(shader, mvs, projection, window.size, time);
+	
+	mvs.pop();
 	
 	//DisplayInstructions();
 	glutSwapBuffers();

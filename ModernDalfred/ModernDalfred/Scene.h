@@ -13,6 +13,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Grid.h"
+#include "MatrixStack.h"
 
 using namespace std;
 using namespace glm;
@@ -23,7 +24,7 @@ public:
 	Scene();
 	~Scene();
 	void init();
-	void draw(Shader &shader, mat4 &mv, const mat4 &proj, const ivec2 &size, const float time);
+	void draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, const ivec2 &size, const float time);
 
 private:
 	Grid *grid;

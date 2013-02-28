@@ -10,7 +10,7 @@ Grid::Grid(int size) {
 	mesh.init(data, size, size);
 }
 
-bool Grid::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
+bool Grid::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj) {
 
-	return mesh.draw(shader, mv, proj);
+	return mesh.draw(shader, mvs.active, proj);
 }

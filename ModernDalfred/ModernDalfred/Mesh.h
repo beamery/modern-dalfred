@@ -24,6 +24,8 @@ public:
 	bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
 	void takeDown();
 
+	static bool drawPoints;
+
 private:
 	vec3 calcNormFromTriangle(int i1, int i2, int i3, vector<VertexData> &verts);
 	vec3 getAveragedNormal(vector<vec3> norms);

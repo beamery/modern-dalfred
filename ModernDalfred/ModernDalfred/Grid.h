@@ -13,6 +13,7 @@
 #include "Utils.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "MatrixStack.h"
 
 using namespace std;
 using namespace glm;
@@ -22,7 +23,7 @@ class Grid {
 public:
 	Grid(int size);
 
-	bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
+	bool draw(Shader &shader, MatrixStack &mvs, const mat4 &proj);
 
 private:
 	Mesh mesh;

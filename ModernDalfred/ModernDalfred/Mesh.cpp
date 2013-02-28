@@ -1,5 +1,7 @@
 #include "Mesh.h"
 
+bool Mesh::drawPoints = false;
+
 Mesh::Mesh() {}
 
 bool Mesh::init(vector<VertexData> &verts, int rows, int cols) {
@@ -183,7 +185,9 @@ void Mesh::initVertexData(vector<VertexData> &verts, int rows, int cols) {
 
 }
 
-
+/*
+ * Set up the shaders and actually render the mesh
+ */
 bool Mesh::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 	// first, check for entry errors
 	if (Utils::GLReturnedError("Mesh::init - Error on entry"))
@@ -194,10 +198,14 @@ bool Mesh::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 	shader.use();
 	shader.setUniform("mvp", mvp);
 
-	//glBindVertexArray(this->vertexArrayHandle);
-	glBindVertexArray(this->flatShadedVertexArrayHandle);
-	glDrawArrays(GL_POINTS, 0, vertices.size());
-	//glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+	glBindVertexArray(this->vertexArrayHandle);
+	//glBindVertexArray(this->flatShadedVertexArrayHandle);
+
+	if (drawPoints)
+		glDrawArrays(GL_POINTS, 0, vertices.size());
+	else
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
+
 
 	// check for exit errors
 	if (Utils::GLReturnedError("Mesh::init - Error on exit"))

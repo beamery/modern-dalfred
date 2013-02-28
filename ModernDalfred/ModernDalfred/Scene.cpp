@@ -12,10 +12,10 @@ void Scene::init() {
 }
 
 
-void Scene::draw(Shader &shader, mat4 &mv, const mat4 &proj, 
+void Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, 
 				 const ivec2 &size, const float time) {
 
 	//triangle.draw(shader, mv, proj, size, time);
-	grid->draw(shader, mv, proj);
+	grid->draw(shader, mvs, proj);
 }
 
