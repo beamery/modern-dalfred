@@ -3,7 +3,7 @@
 
 #define WORLD_UNITS_PER_METER 1.00f
 #define METERS_PER_INCH 0.0254f
-#define GRID_SIZE 32
+#define GRID_SIZE 64
 
 #include <iostream>
 #include <vector>

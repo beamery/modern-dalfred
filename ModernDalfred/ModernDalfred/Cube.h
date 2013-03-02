@@ -13,26 +13,27 @@
 #include "Utils.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "Object.h"
 
 using namespace std;
 using namespace glm;
 
-class Cube {
+class Cube : Object {
 
 public:
-	Cube();
+	Cube(vec3 matAmbient = vec3(1.0f,1.0f,1.0f), vec3 matDiffuse= vec3(1.0f,1.0f,1.0f));
 	bool init();
-	bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
+	virtual bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
 
 private:
 	void initVertices();
-	GLuint vertexArrayHandle;
-	GLuint vertexBufferHandle;
-	vector<VertexData> vertices;
+	//GLuint vertexArrayHandle;
+	//GLuint vertexBufferHandle;
+	//vector<VertexData> vertices;
 
 	vec3 color;
-	vec3 materialDiffuse;
-	vec3 materialAmbient;
+	//vec3 materialDiffuse;
+	//vec3 materialAmbient;
 };
 
 

@@ -21,6 +21,12 @@ Shader::Shader()
 	this->program_id = BAD_GL_VALUE;
 }
 
+Shader::~Shader() {
+	this->takeDown();
+}
+
+
+
 /*	This Shader() class implements or assumes a basic set of uniforms will be
 	provided to all shaders derived from it. These are listed below. 
 	Shader::CommonSetup() can be used by call derived classes to send the 

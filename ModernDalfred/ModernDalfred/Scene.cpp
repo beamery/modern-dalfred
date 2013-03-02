@@ -1,6 +1,6 @@
 #include "Scene.h"
 
-Scene::Scene() {}
+Scene::Scene() : cube(Cube(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f))) {}
 
 Scene::~Scene() {
 	delete grid;
@@ -8,7 +8,7 @@ Scene::~Scene() {
 
 
 void Scene::init() {
-	grid = new Grid(GRID_SIZE);	
+	grid = new Grid(GRID_SIZE, vec3(0.6f, 0.8f, 0.6f), vec3(0.6f, 0.8f, 0.6f));	
 	cube.init();
 	t.init();
 	lightPos = vec4(0.0f, 3.0f, 0.0f, 0.0f);

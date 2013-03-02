@@ -87,6 +87,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MatrixStack.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Triangle.cpp" />
@@ -98,6 +99,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="MatrixStack.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Triangle.h" />
@@ -107,13 +109,13 @@
   <ItemGroup>
     <None Include="colored_shader.frag" />
     <None Include="colored_shader.vert" />
+    <None Include="flat_lighting.frag" />
+    <None Include="flat_lighting.vert" />
     <None Include="lighting.frag" />
     <None Include="lighting.vert" />
     <None Include="NOTES.md" />
     <None Include="pattern_shader.frag" />
     <None Include="pattern_shader.vert" />
-    <None Include="play_shader.frag" />
-    <None Include="play_shader.vert" />
     <None Include="README.md" />
     <None Include="SOURCES.md" />
   </ItemGroup>

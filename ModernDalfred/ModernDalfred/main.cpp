@@ -6,6 +6,7 @@
 #include <iostream>
 #include <assert.h>
 #include <vector>
+#include <map>
 #include <gl/glew.h>
 #include <gl/freeglut.h>
 #include <glm/glm.hpp>
@@ -27,8 +28,13 @@ struct Window {
 	vector<string> instructions;
 } window;
 
+struct Options {
+	int shader;
+} options;
+
+
 Scene scene;
-Shader shader;
+map<string, Shader> shaders;
 MatrixStack mvs;
 
 void ReshapeFunc(int w, int h) {
@@ -47,6 +53,9 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 	{
 	case 'p':
 		Mesh::drawPoints = !Mesh::drawPoints;
+		break;
+	case 's':
+		options.shader = (options.shader + 1) % 3;
 		break;
 	case 'x':
 	case 27:
@@ -100,7 +109,10 @@ void DisplayFunc() {
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	scene.draw(shader, mvs, projection, window.size, time);
+	if (options.shader == 0)
+		scene.draw(shaders["flatShader"], mvs, projection, window.size, time);
+	else if (options.shader == 1 || options.shader == 2)
+		scene.draw(shaders["gouraudShader"], mvs, projection, window.size, time);
 	
 	mvs.pop();
 	
@@ -110,12 +122,23 @@ void DisplayFunc() {
 }
 
 void initShaders() {
-	shader.init("lighting.vert", "lighting.frag");
-	shader.getUniformLocation("lightPosition");
-	shader.getUniformLocation("Kd");
-	shader.getUniformLocation("Ld");
-	shader.getUniformLocation("Ka");
-	shader.getUniformLocation("La");
+	Shader *gouraudShader = new Shader();
+	gouraudShader->init("lighting.vert", "lighting.frag");
+	gouraudShader->getUniformLocation("lightPosition");
+	gouraudShader->getUniformLocation("Kd");
+	gouraudShader->getUniformLocation("Ld");
+	gouraudShader->getUniformLocation("Ka");
+	gouraudShader->getUniformLocation("La");
+	shaders["gouraudShader"] = *gouraudShader;
+
+	Shader *flatShader =  new Shader();
+	flatShader->init("flat_lighting.vert", "flat_lighting.frag");
+	flatShader->getUniformLocation("lightPosition");
+	flatShader->getUniformLocation("Kd");
+	flatShader->getUniformLocation("Ld");
+	flatShader->getUniformLocation("Ka");
+	flatShader->getUniformLocation("La");
+	shaders["flatShader"] = *flatShader;
 }
 
 void initScene() {
@@ -128,6 +151,8 @@ void testMesh() {
 
 
 int main(int argc, char * argv[]) {
+	options.shader = 0;
+	
 	glutInit(&argc, argv);
 	glutInitWindowSize(1280, 720);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);

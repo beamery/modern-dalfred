@@ -30,6 +30,7 @@ using namespace glm;
 class Shader {
 public:
 	Shader();
+	~Shader();
 	void takeDown();
 	void use();
 	virtual bool init(char * vertex_shader_file, char * fragment_shader_file);

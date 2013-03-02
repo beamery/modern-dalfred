@@ -21,16 +21,13 @@ using namespace glm;
 class Grid {
 
 public:
-	Grid(int size);
+	Grid(int size, vec3 matAmbient, vec3 matDiffuse);
 
 	bool draw(Shader &shader,  mat4 &mv, const mat4 &proj);
 
 private:
 	Mesh mesh;
 	vector<VertexData> data;
-
-	vec3 materialDiffuse;
-	vec3 materialAmbient;
 };
 
 

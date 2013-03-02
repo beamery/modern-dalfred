@@ -9,6 +9,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Object.h"
 #include "VertexData.h"
 #include "Utils.h"
 #include "Shader.h"
@@ -16,13 +17,12 @@
 using namespace std;
 using namespace glm;
 
-class Mesh {
+class Mesh: Object {
 
 public:	
-	Mesh();
+	Mesh(vec3 matAmbient, vec3 matDiffuse);
 	bool init(vector<VertexData> &verts, int rows, int cols);
-	bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
-	void takeDown();
+	virtual bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
 
 	static bool drawPoints;
 
@@ -30,13 +30,9 @@ private:
 	vec3 calcNormFromTriangle(int i1, int i2, int i3, vector<VertexData> &verts);
 	vec3 getAveragedNormal(vector<vec3> norms);
 	void initVertexData(vector<VertexData> &verts, int rows, int cols);
-	GLuint vertexArrayHandle;
-	GLuint vertexBufferHandle;
-	GLuint flatShadedVertexArrayHandle;
-	GLuint flatShadedVertexBufferHandle;
-	vector<VertexData> vertices;
-	vector<VertexData> flatShadedVerts;
-	vector<GLuint> indices;
+	//GLuint vertexArrayHandle;
+	//GLuint vertexBufferHandle;
+	//vector<VertexData> vertices;
 };
 
 /*

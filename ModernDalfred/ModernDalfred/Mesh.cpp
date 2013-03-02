@@ -2,7 +2,7 @@
 
 bool Mesh::drawPoints = false;
 
-Mesh::Mesh() {}
+Mesh::Mesh(vec3 matAmbient, vec3 matDiffuse) : Object(matAmbient, matDiffuse) {}
 
 bool Mesh::init(vector<VertexData> &verts, int rows, int cols) {
 	// first, check for entry errors
@@ -10,13 +10,6 @@ bool Mesh::init(vector<VertexData> &verts, int rows, int cols) {
 		return false;
 
 	initVertexData(verts, rows, cols);
-
-	//vector<VertexData> herpDerp;
-	//herpDerp.push_back(VertexData(vec3(-1.0f, -1.0f, 0.0f), vec3(1, 1, 1), vec3(0, 0, 1)));
-	//herpDerp.push_back(VertexData(vec3(1.0f, -1.0f, 0.0f), vec3(1, 1, 1), vec3(0, 0, 1)));
-	//herpDerp.push_back(VertexData(vec3(0.0f, 1.0f, 0.0f), vec3(1, 1, 1), vec3(0, 0, 1)));
-	//vertices = herpDerp;
-
 
 	// initialize vertex array
 	glGenVertexArrays(1, &vertexArrayHandle);
@@ -31,47 +24,21 @@ bool Mesh::init(vector<VertexData> &verts, int rows, int cols) {
 	// channel 0 - vertex geometry
 	// channel 1 - vertex color
 	// channel 2 - vertex normal
+	// channel 3 - flat vertex normal
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), 0);	
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*) sizeof(vec3));	
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*) (2 * sizeof(vec3)));	
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*) (3 * sizeof(vec3)));	
 
 	// enable the channels
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 
 	// unbind the buffer and vertex array
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
-	//////// Repeat the process for the flat-shaded vertices /////////
-
-	// initialize vertex array
-	glGenVertexArrays(1, &flatShadedVertexArrayHandle);
-	glBindVertexArray(flatShadedVertexArrayHandle);
-
-	// intialize array buffer
-	glGenBuffers(1, &flatShadedVertexBufferHandle);
-	glBindBuffer(GL_ARRAY_BUFFER, flatShadedVertexBufferHandle);
-	glBufferData(GL_ARRAY_BUFFER, flatShadedVerts.size() * sizeof(VertexData), &flatShadedVerts[0], GL_STATIC_DRAW);
-
-	// logical setup of array buffer
-	// channel 0 - vertex geometry
-	// channel 1 - vertex color
-	// channel 2 - vertex normal
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), 0);	
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*) sizeof(vec3));	
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*) (2 * sizeof(vec3)));	
-
-	// enable the channels
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-
-	// unbind the buffer and vertex array
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
 
 	// check for exit errors
 	if (Utils::GLReturnedError("Mesh::init - Error on exit"))
@@ -120,24 +87,21 @@ void Mesh::initVertexData(vector<VertexData> &verts, int rows, int cols) {
 				// averaged normal
 
 				// current (x, y)
-				smoothNorms[curIdx].indices.push_back(flatShadedVerts.size());
+				smoothNorms[curIdx].indices.push_back(vertices.size());
 				smoothNorms[curIdx].norms.push_back(flatNorm);
 
 				// Push back the vertices in the correct order for this mesh (into each vector).
 				// We'll come back later and give 'vertices' the correct normals
-				flatShadedVerts.push_back(VertexData(verts[curIdx].position, verts[curIdx].color, flatNorm));
 				vertices.push_back(VertexData(verts[curIdx].position, verts[curIdx].color, flatNorm));
 				
 				// up (x, y+1)
-				smoothNorms[upIdx].indices.push_back(flatShadedVerts.size());
+				smoothNorms[upIdx].indices.push_back(vertices.size());
 				smoothNorms[upIdx].norms.push_back(flatNorm);
-				flatShadedVerts.push_back(VertexData(verts[upIdx].position, verts[upIdx].color, flatNorm));
 				vertices.push_back(VertexData(verts[upIdx].position, verts[upIdx].color, flatNorm));
 
 				// up and left (x-1, y+1)
-				smoothNorms[upLeftIdx].indices.push_back(flatShadedVerts.size());
+				smoothNorms[upLeftIdx].indices.push_back(vertices.size());
 				smoothNorms[upLeftIdx].norms.push_back(flatNorm);
-				flatShadedVerts.push_back(VertexData(verts[upLeftIdx].position, verts[upLeftIdx].color, flatNorm));
 				vertices.push_back(VertexData(verts[upLeftIdx].position, verts[upLeftIdx].color, flatNorm));
 
 			}
@@ -148,23 +112,19 @@ void Mesh::initVertexData(vector<VertexData> &verts, int rows, int cols) {
 				vec3 flatNorm = calcNormFromTriangle(curIdx, rightIdx, upIdx, verts);
 
 				// current (x, y)
-				smoothNorms[curIdx].indices.push_back(flatShadedVerts.size());
+				smoothNorms[curIdx].indices.push_back(vertices.size());
 				smoothNorms[curIdx].norms.push_back(flatNorm);
-				flatShadedVerts.push_back(VertexData(verts[curIdx].position, verts[curIdx].color, flatNorm));
 				vertices.push_back(VertexData(verts[curIdx].position, verts[curIdx].color, flatNorm));
 
 				// right (x+1, y)
-				smoothNorms[rightIdx].indices.push_back(flatShadedVerts.size());
+				smoothNorms[rightIdx].indices.push_back(vertices.size());
 				smoothNorms[rightIdx].norms.push_back(flatNorm);
-				flatShadedVerts.push_back(VertexData(verts[rightIdx].position, verts[rightIdx].color, flatNorm));
 				vertices.push_back(VertexData(verts[rightIdx].position, verts[rightIdx].color, flatNorm));
 
 				// up (x, y+1)
-				smoothNorms[upIdx].indices.push_back(flatShadedVerts.size());
+				smoothNorms[upIdx].indices.push_back(vertices.size());
 				smoothNorms[upIdx].norms.push_back(flatNorm);
-				flatShadedVerts.push_back(VertexData(verts[upIdx].position, verts[upIdx].color, flatNorm));
 				vertices.push_back(VertexData(verts[upIdx].position, verts[upIdx].color, flatNorm));
-
 			}
 
 		}
@@ -198,13 +158,15 @@ bool Mesh::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 	mat4 mvp = proj * mv;
 
 	shader.use();
+	shader.setUniform("Kd", materialDiffuse);
+	shader.setUniform("Ka", materialAmbient);
 	shader.setUniform("mvMat", mv);
 	shader.setUniform("projMat", proj);
 	shader.setUniform("normalMat", transpose(inverse(mv)));
 	shader.setUniform("mvp", mvp);
 
-	//glBindVertexArray(this->vertexArrayHandle);
-	glBindVertexArray(this->flatShadedVertexArrayHandle);
+	glBindVertexArray(this->vertexArrayHandle);
+	//glBindVertexArray(this->flatShadedVertexArrayHandle);
 
 	if (drawPoints)
 		glDrawArrays(GL_POINTS, 0, vertices.size());
@@ -220,17 +182,6 @@ bool Mesh::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 	return true;
 }
 
-void Mesh::takeDown() {
-	if (this->vertexArrayHandle != GLuint(-1)) {
-		glDeleteVertexArrays(1, &this->vertexArrayHandle);
-	}
-
-	if (this->vertexBufferHandle != GLuint(-1)) {
-		glDeleteBuffers(1, &this->vertexBufferHandle);
-	}
-
-	this->vertexArrayHandle = this->vertexBufferHandle = GLuint(-1);
-}
 
 /*
  * Calculates the normal of a triangle, given its vertex indices and the 
