@@ -2,7 +2,8 @@
 
 bool Mesh::drawPoints = false;
 
-Mesh::Mesh(vec3 matAmbient, vec3 matDiffuse) : Object(matAmbient, matDiffuse) {}
+Mesh::Mesh(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine) : 
+	Object(matAmbient, matDiffuse, matSpecular, shine) {}
 
 bool Mesh::init(vector<VertexData> &verts, int rows, int cols) {
 	// first, check for entry errors
@@ -134,17 +135,11 @@ void Mesh::initVertexData(vector<VertexData> &verts, int rows, int cols) {
 	// Go through and give 'vertices' the correct normals
 	for (auto i = smoothNorms.begin(); i != smoothNorms.end(); i++) {
 		vec3 normal = getAveragedNormal(i->norms);
-		cout << "Getting averaged normal for " << &i << endl;
+		//cout << "Getting averaged normal for " << &i << endl;
 		for (auto j = i->indices.begin(); j != i->indices.end(); j++) {
 			vertices[*j].normal = normal;
 		}
 	}
-
-	//for (auto i = vertices.begin(); i != vertices.end(); i++) {
-	//	vec3 pos = i->position;
-	//	cout << "(" << pos.x << ", " << pos.y << ", " << pos.z << ")" << endl;
-	//}
-
 }
 
 /*
@@ -156,19 +151,23 @@ bool Mesh::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 		return false;
 
 	mat4 mvp = proj * mv;
+	mat3 normal(transpose(inverse(mv)));
 
+	// push uniforms into the shader
 	shader.use();
-	shader.setUniform("Kd", materialDiffuse);
-	shader.setUniform("Ka", materialAmbient);
 	shader.setUniform("mvMat", mv);
 	shader.setUniform("projMat", proj);
 	shader.setUniform("normalMat", transpose(inverse(mv)));
 	shader.setUniform("mvp", mvp);
+	shader.setUniform("Kd", materialDiffuse);
+	shader.setUniform("Ka", materialAmbient);
+	shader.setUniform("Ks", materialSpecular);
+	shader.setUniform("shine", shine);
 
 	glBindVertexArray(this->vertexArrayHandle);
 	//glBindVertexArray(this->flatShadedVertexArrayHandle);
 
-	if (drawPoints)
+	if (Mesh::drawPoints)
 		glDrawArrays(GL_POINTS, 0, vertices.size());
 	else
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size());
@@ -188,14 +187,17 @@ bool Mesh::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
  * vector of vertices they come from. Assumes counter-clockwise vertex winding
  * and calculates the normal by doing the following computation:
  *
- * (i2 - i1) x (i3 - i1)
+ * (i3 - i1) x (i2 - i1)
+ *
+ * Still need to figure out why it isn't the other way around
  */
 vec3 Mesh::calcNormFromTriangle(int i1, int i2, int i3, vector<VertexData> &verts) {
 	
 	vec3 v1 = verts[i1].position;
 	vec3 v2 = verts[i2].position;
 	vec3 v3 = verts[i3].position;
-	vec3 norm = cross((v3 - v1), (v2 - v1));
+	//vec3 norm = cross((v3 - v1), (v2 - v1));
+	vec3 norm = cross((v2 - v1), (v3 - v1));
 	norm = normalize(norm);
 
 	return norm;

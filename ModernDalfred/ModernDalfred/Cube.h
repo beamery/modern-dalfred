@@ -21,7 +21,7 @@ using namespace glm;
 class Cube : Object {
 
 public:
-	Cube(vec3 matAmbient = vec3(1.0f,1.0f,1.0f), vec3 matDiffuse= vec3(1.0f,1.0f,1.0f));
+	Cube(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine);
 	bool init();
 	virtual bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
 

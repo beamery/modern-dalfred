@@ -16,7 +16,8 @@
 class Object {
 
 public:
-	Object(vec3 matAmbient, vec3 matDiffuse);
+	Object(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine);
+	virtual ~Object();
 	virtual bool draw(Shader &shader, mat4 &mv, const mat4 &proj) = 0;
 	virtual void takeDown();
 
@@ -27,6 +28,8 @@ protected:
 
 	vec3 materialAmbient;
 	vec3 materialDiffuse;
+	vec3 materialSpecular;
+	float shine;
 
 };
 

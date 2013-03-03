@@ -20,7 +20,7 @@ using namespace glm;
 class Mesh: Object {
 
 public:	
-	Mesh(vec3 matAmbient, vec3 matDiffuse);
+	Mesh(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine);
 	bool init(vector<VertexData> &verts, int rows, int cols);
 	virtual bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
 

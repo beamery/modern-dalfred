@@ -1,6 +1,7 @@
 #include "Cube.h"
 
-Cube::Cube(vec3 matAmbient, vec3 matDiffuse) : Object(matAmbient, matDiffuse) {}
+Cube::Cube(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine) : 
+	Object(matAmbient, matDiffuse, matSpecular, shine) {}
 
 bool Cube::init() {
 	// first, check for entry errors
@@ -97,6 +98,8 @@ bool Cube::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 		return false;
 
 	mat4 mvp = proj * mv;
+
+	// push uniforms to the shader
 	shader.use();
 	shader.setUniform("mvMat", mv);
 	shader.setUniform("projMat", proj);
@@ -104,6 +107,8 @@ bool Cube::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 	shader.setUniform("mvp", mvp);
 	shader.setUniform("Kd", materialDiffuse);
 	shader.setUniform("Ka", materialAmbient);
+	shader.setUniform("Ks", materialSpecular);
+	shader.setUniform("shine", shine);
 
 	glBindVertexArray(vertexArrayHandle);
 

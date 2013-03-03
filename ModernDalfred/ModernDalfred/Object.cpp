@@ -1,7 +1,13 @@
 #include "Object.h"
 
-Object::Object(vec3 matAmbient, vec3 matDiffuse) : 
-	materialAmbient(matAmbient), materialDiffuse(matDiffuse) {}
+Object::Object(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine) : 
+	materialAmbient(matAmbient), materialDiffuse(matDiffuse), 
+	materialSpecular(matSpecular), shine(shine) {}
+
+Object::~Object() {
+	this->takeDown();
+}
+
 
 
 void Object::takeDown() {
