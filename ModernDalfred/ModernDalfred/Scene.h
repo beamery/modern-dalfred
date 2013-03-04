@@ -18,8 +18,9 @@
 #include "Mesh.h"
 #include "Grid.h"
 #include "Cube.h"
-#include "Triangle.h"
 #include "Cylinder.h"
+#include "Torus.h"
+#include "Stool.h"
 
 using namespace std;
 using namespace glm;
@@ -29,14 +30,18 @@ class Scene {
 public:
 	Scene();
 	~Scene();
-	void init();
-	void draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, const ivec2 &size, const float time);
+	bool init();
+	bool draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, const ivec2 &size, const float time);
 	void moveLight(float x, float z);
 
 private:
+	StoolModel stoolModel;
+	vector<Stool> stools;
+
 	Grid grid;
 	Cube cube;
 	Cylinder sDisk;
+	Torus torus;
 
 
 	vec4 lightPos;

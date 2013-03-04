@@ -49,22 +49,22 @@ void DisplayFunc() {
 		return;
 
 	glEnable(GL_DEPTH_TEST);
+	glViewport(0, 0, window.size.x, window.size.y);
+	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	mvs.push();
 
 	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
-	mat4 projection = perspective(50.0f, window.window_aspect, 1.0f, 1000.0f);
+	mat4 projection = perspective(50.0f, window.window_aspect, 0.1f, 1000.0f);
 
 	// PERFORM CAMERA TRANSFORMS
 	// put camera 4m above the scene and pull it back 10m
-	mvs.active = translate(mvs.active, vec3(0.0f, -4.0f, -10.0f));
-	//mvs.active = rotate(mvs.active, 60.0f, vec3(1.0f, 0.0f, 0.0f));
+	mvs.active = translate(mvs.active, vec3(0.0f, -1.0f, -4.0f));
+	//mvs.active = rotate(mvs.active, 30.0f, vec3(1.0f, 0.0f, 0.0f));
+	mvs.active = rotate(mvs.active, options.rotX, vec3(1.0f, 0.0f, 0.0f));
 	mvs.active = rotate(mvs.active, options.rotY, vec3(0.0f, 1.0f, 0.0f));
 	// END CAMERA TRANSFORMS
-
-	glViewport(0, 0, window.size.x, window.size.y);
-	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	if (options.shader == 0)
 		scene.draw(shaders["flatShader"], mvs, projection, window.size, time);
@@ -116,19 +116,19 @@ void SpecialFunc(int c, int x, int y) {
 	switch (c) {
 	case GLUT_KEY_RIGHT:
 		//scene.moveLight(1.0f, 0.0f);
-		options.rotY++;
+		options.rotY--;
 		break;
 	case GLUT_KEY_LEFT:
 		//scene.moveLight(-1.0f, 0.0f);
-		options.rotY--;
+		options.rotY++;
 		break;
 	case GLUT_KEY_UP:
-		scene.moveLight(0.0f, -1.0f);
-		//options.rotX = std::min(89.0f, options.rotX + 1.0f);
+		//scene.moveLight(0.0f, -1.0f);
+		options.rotX = std::min(89.0f, options.rotX + 1.0f);
 		break;
 	case GLUT_KEY_DOWN:
-		scene.moveLight(0.0f, 1.0f);
-		//options.rotX = std::max(-89.0f, options.rotX - 1.0f);
+		//scene.moveLight(0.0f, 1.0f);
+		options.rotX = std::max(-89.0f, options.rotX - 1.0f);
 		break;
 	}
 

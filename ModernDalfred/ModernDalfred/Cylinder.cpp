@@ -11,7 +11,7 @@ bool Cylinder::init(float innerRad, float outerRad, int slices, float height) {
 	vector<VertexData> data;
 
 	// create inner circle
-	for (float theta = 0.0f; theta <= 2 * PI; theta += 2 * PI / slices) {
+	for (float theta = 0.0f; theta < 2 * PI; theta += 2 * PI / slices) {
 		data.push_back(VertexData(
 			vec3(innerRad * std::cos(theta), height, innerRad * std::sin(theta)), 
 			vec3(0,0,0), 
@@ -24,7 +24,7 @@ bool Cylinder::init(float innerRad, float outerRad, int slices, float height) {
 		vec3(0,1,0)));
 
 	// create outer circle
-	for (float theta = 0.0f; theta <= 2 * PI; theta += 2 * PI / slices) {
+	for (float theta = 0.0f; theta < 2 * PI; theta += 2 * PI / slices) {
 		data.push_back(VertexData(
 			vec3(outerRad * std::cos(theta), 0.0f, outerRad * std::sin(theta)), 
 			vec3(0,0,0), 

@@ -20,10 +20,6 @@
  * A disk shape, possibly with a hole in the middle. The disk may have
  * a height. Make sure that inner radius is smaller than outer radius. If it
  * is not, lighting may be broken.
- *
- * Note: By default, outer radius is always on the bottom
- *
- * TODO: Make sure that this class doesn't break when lighting is applied
  */
 class Cylinder {
 

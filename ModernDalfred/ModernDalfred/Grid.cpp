@@ -11,8 +11,8 @@ bool Grid::init(int size) {
 	// center the grid when drawn
 	for (float i = size / 2.0f; i >= -size / 2.0f; i--) {
 		for (float j = -size / 2.0f; j < size / 2.0f; j++) {
-			data.push_back(VertexData(vec3(j, float(rand()) / RAND_MAX, i), vec3(0,0,0), vec3(0, 1, 0)));	
-			//data.push_back(VertexData(vec3(j, 0.0f, i), vec3(0,0,0), vec3(0, 1, 0)));	
+			//data.push_back(VertexData(vec3(j, float(rand()) / RAND_MAX, i), vec3(0,0,0), vec3(0, 1, 0)));	
+			data.push_back(VertexData(vec3(j, 0.0f, i), vec3(0,0,0), vec3(0, 1, 0)));	
 		}
 	}
 	return mesh.init(data, size, size);
