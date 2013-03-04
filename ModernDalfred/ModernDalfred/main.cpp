@@ -26,6 +26,7 @@ struct Window {
 	ivec2 size;
 	float window_aspect;
 	vector<string> instructions;
+	float fov;
 } window;
 
 struct Options {
@@ -56,7 +57,7 @@ void DisplayFunc() {
 	mvs.push();
 
 	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
-	mat4 projection = perspective(50.0f, window.window_aspect, 0.1f, 1000.0f);
+	mat4 projection = perspective(window.fov, window.window_aspect, 0.1f, 1000.0f);
 
 	// PERFORM CAMERA TRANSFORMS
 	// put camera 4m above the scene and pull it back 10m
@@ -96,6 +97,12 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 		return;
 
 	switch (c) {
+	case 'i':
+		window.fov--;
+		break;
+	case 'o':
+		window.fov++;
+		break;
 	case 'p':
 		Mesh::drawPoints = !Mesh::drawPoints;
 		break;
@@ -208,6 +215,7 @@ void testMesh() {
 int main(int argc, char * argv[]) {
 	options.shader = 0;
 	options.rotX = options.rotY = 0.0f;
+	window.fov = 50.0f;
 	
 	glutInit(&argc, argv);
 	glutInitWindowSize(1280, 720);
