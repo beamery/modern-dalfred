@@ -18,8 +18,8 @@ Scene::Scene() :
 	lightSpecular = vec3(0.4f, 0.4f, 0.4f);
 
 	for (int i = 0; i < 10; i++) {
-		float x = (rand() % 120 - 60);
-		float z = (rand() % 120 - 60);
+		float x = float(rand() % 120 - 60);
+		float z = float(rand() % 120 - 60);
 		stools.push_back(Stool(&stoolModel, vec3(x, 0, z)));
 	}
 

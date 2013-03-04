@@ -1,7 +1,7 @@
 #include "Stool.h"
 
 // construct objects
-StoolModel::StoolModel(vec3 color) : color(0.0f, 1.0f, 1.0f), 
+StoolModel::StoolModel(vec3 color) : color(color), 
 	seatSurface(color, color, color, 15.0f), 
 	seatSide(color, color, color, 15.0f),
 	largeSkewedDisk(color, color, color, 15.0f),
@@ -20,18 +20,18 @@ StoolModel::StoolModel(vec3 color) : color(0.0f, 1.0f, 1.0f),
 bool StoolModel::initMesh() {
 	// have to initialize inner radius to some very small value epsilon in order to avoid some weird
 	// lighting side effects of having an inner radius of 0
-	if (!seatSurface.init(EPSILON, SEAT_DIAM / 2, 32)) return false;	
-	if (!seatSide.init(SEAT_DIAM / 2, SEAT_DIAM / 2, 32, SEAT_THICKNESS)) return false;
-	if (!largeSkewedDisk.init(SEAT_DIAM / 2 - 2.5f, SEAT_DIAM / 2, 32, 0.5f)) return false;
-	if (!smallSkewedDisk.init(STEM_DIAM / 2, STEM_DIAM / 2 + 1, 16, 0.2f)) return false;
+	if (!seatSurface.init(EPSILON, SEAT_DIAM / 2, 16)) return false;	
+	if (!seatSide.init(SEAT_DIAM / 2, SEAT_DIAM / 2, 16, SEAT_THICKNESS)) return false;
+	if (!largeSkewedDisk.init(SEAT_DIAM / 2 - 2.5f, SEAT_DIAM / 2, 16, 0.5f)) return false;
+	if (!smallSkewedDisk.init(STEM_DIAM / 2, STEM_DIAM / 2 + 1, 10, 0.2f)) return false;
 	if (!stemCylinder.init(STEM_DIAM / 2, STEM_DIAM / 2, 10, STEM_LENGTH)) return false;
 	if (!stemBottom.init(EPSILON, STEM_DIAM / 2, 10)) return false;
 	if (!leg.init()) return false;
 	if (!ring.init(RING_OUTER_RAD, RING_THICKNESS, 32, 10)) return false;
-	if (!topDiskCylinder.init(TOP_DISK_RAD, TOP_DISK_RAD, 32, DISK_THICKNESS)) return false;
-	if (!topDiskSurface.init(STEM_DIAM / 2, TOP_DISK_RAD, 32)) return false;	
-	if (!bottomDiskCylinder.init(BOT_DISK_RAD, BOT_DISK_RAD, 32, DISK_THICKNESS)) return false;
-	if (!bottomDiskSurface.init(STEM_DIAM / 2, BOT_DISK_RAD, 32)) return false;	
+	if (!topDiskCylinder.init(TOP_DISK_RAD, TOP_DISK_RAD, 16, DISK_THICKNESS)) return false;
+	if (!topDiskSurface.init(STEM_DIAM / 2, TOP_DISK_RAD, 16)) return false;	
+	if (!bottomDiskCylinder.init(BOT_DISK_RAD, BOT_DISK_RAD, 16, DISK_THICKNESS)) return false;
+	if (!bottomDiskSurface.init(STEM_DIAM / 2, BOT_DISK_RAD, 16)) return false;	
 
 	return true;
 }
