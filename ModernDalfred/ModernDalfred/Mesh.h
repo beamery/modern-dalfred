@@ -21,7 +21,7 @@ class Mesh: Object {
 
 public:	
 	Mesh(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine);
-	bool init(vector<VertexData> &verts, int rows, int cols);
+	bool init(vector<VertexData> &verts, int rows, int cols, bool connectedHoriz = false, bool connectedVert = false);
 	virtual bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
 
 	static bool drawPoints;
@@ -29,7 +29,7 @@ public:
 private:
 	vec3 calcNormFromTriangle(int i1, int i2, int i3, vector<VertexData> &verts);
 	vec3 getAveragedNormal(vector<vec3> norms);
-	void initVertexData(vector<VertexData> &verts, int rows, int cols);
+	void initVertexData(vector<VertexData> &verts, int rows, int cols, bool connectedHoriz, bool connectedVert);
 	//GLuint vertexArrayHandle;
 	//GLuint vertexBufferHandle;
 	//vector<VertexData> vertices;

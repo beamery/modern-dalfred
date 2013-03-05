@@ -5,12 +5,12 @@ bool Mesh::drawPoints = false;
 Mesh::Mesh(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine) : 
 	Object(matAmbient, matDiffuse, matSpecular, shine) {}
 
-bool Mesh::init(vector<VertexData> &verts, int rows, int cols) {
+bool Mesh::init(vector<VertexData> &verts, int rows, int cols, bool connectedHoriz, bool connectedVert) {
 	// first, check for entry errors
 	if (Utils::GLReturnedError("Mesh::init - Error on entry"))
 		return false;
 
-	initVertexData(verts, rows, cols);
+	initVertexData(verts, rows, cols, connectedHoriz, connectedVert);
 
 	// initialize vertex array
 	glGenVertexArrays(1, &vertexArrayHandle);
@@ -66,70 +66,132 @@ bool Mesh::init(vector<VertexData> &verts, int rows, int cols) {
  *  g  h  i
  *
  */
-void Mesh::initVertexData(vector<VertexData> &verts, int rows, int cols) {
+void Mesh::initVertexData(vector<VertexData> &verts, int rows, int cols, bool connectedHoriz, bool connectedVert) {
 	vector<IndexedNorm> smoothNorms(verts.size());
 
 	// number of rows - 1 so that we don't run out of bounds
-	for (int y = 0; y < rows - 1; y++) {
+	for (int y = 0; y < rows; y++) {
 		for (int x = 0; x < cols; x++) {
 			int curIdx = (cols * y) + x;
 			int upIdx = (cols * (y+1)) + x;
 			int upLeftIdx = (cols * (y+1)) + x-1;
 			int rightIdx = (cols * (y)) + x+1;
-			
-			// if we are at any col but the first, construct the previous triangle
-			if (x != 0) {
-				// get the flat-shaded normal for this triangle
-				vec3 flatNorm = calcNormFromTriangle(curIdx, upIdx, upLeftIdx, verts);
-
-				// Initially push back the index of this vertex so that we can come
-				// back later and put the correct averaged normal into the vertices vector.
-				// Also put in the flat norm of this triangle to allow us to calculate the 
-				// averaged normal
-
-				// current (x, y)
-				smoothNorms[curIdx].indices.push_back(vertices.size());
-				smoothNorms[curIdx].norms.push_back(flatNorm);
-
-				// Push back the vertices in the correct order for this mesh (into each vector).
-				// We'll come back later and give 'vertices' the correct normals
-				vertices.push_back(VertexData(verts[curIdx].position, verts[curIdx].color, flatNorm));
 				
-				// up (x, y+1)
-				smoothNorms[upIdx].indices.push_back(vertices.size());
-				smoothNorms[upIdx].norms.push_back(flatNorm);
-				vertices.push_back(VertexData(verts[upIdx].position, verts[upIdx].color, flatNorm));
+			if (y < rows - 1) {
+				// if we are at any col but the first, construct the previous triangle
+				if (x != 0) {
+					// get the flat-shaded normal for this triangle
+					vec3 flatNorm = calcNormFromTriangle(curIdx, upIdx, upLeftIdx, verts);
 
-				// up and left (x-1, y+1)
-				smoothNorms[upLeftIdx].indices.push_back(vertices.size());
-				smoothNorms[upLeftIdx].norms.push_back(flatNorm);
-				vertices.push_back(VertexData(verts[upLeftIdx].position, verts[upLeftIdx].color, flatNorm));
+					// Initially push back the index of this vertex so that we can come
+					// back later and put the correct averaged normal into the vertices vector.
+					// Also put in the flat norm of this triangle to allow us to calculate the 
+					// averaged normal
 
+					// current (x, y)
+					smoothNorms[curIdx].indices.push_back(vertices.size());
+					smoothNorms[curIdx].norms.push_back(flatNorm);
+
+					// Push back the vertices in the correct order for this mesh (into each vector).
+					// We'll come back later and give 'vertices' the correct normals
+					vertices.push_back(VertexData(verts[curIdx].position, verts[curIdx].color, flatNorm));
+					
+					// up (x, y+1)
+					smoothNorms[upIdx].indices.push_back(vertices.size());
+					smoothNorms[upIdx].norms.push_back(flatNorm);
+					vertices.push_back(VertexData(verts[upIdx].position, verts[upIdx].color, flatNorm));
+
+					// up and left (x-1, y+1)
+					smoothNorms[upLeftIdx].indices.push_back(vertices.size());
+					smoothNorms[upLeftIdx].norms.push_back(flatNorm);
+					vertices.push_back(VertexData(verts[upLeftIdx].position, verts[upLeftIdx].color, flatNorm));
+
+				}
+				// if we are at the first col and the shape should be connected horizontally, 
+				// add the normal for the last triangle as well
+				else if (connectedHoriz && x == 0) {
+					// get normal for last triangle in the row (last, up, up and left
+					vec3 flatNorm = calcNormFromTriangle(
+						(cols * y) + cols - 1, 
+						cols * (y+1) + cols - 1, 
+						cols * (y+1) + cols - 2, verts);
+
+					// current (x, y)
+					smoothNorms[curIdx].norms.push_back(flatNorm);
+
+					// up (x, y+1)
+					smoothNorms[upIdx].norms.push_back(flatNorm);
+				}
+
+
+				// if we are at any col but the last, construct the following triangle
+				if (x != cols - 1) {
+					// get the flat-shaded normal for this triangle
+					vec3 flatNorm = calcNormFromTriangle(curIdx, rightIdx, upIdx, verts);
+
+					// current (x, y)
+					smoothNorms[curIdx].indices.push_back(vertices.size());
+					smoothNorms[curIdx].norms.push_back(flatNorm);
+					vertices.push_back(VertexData(verts[curIdx].position, verts[curIdx].color, flatNorm));
+
+					// right (x+1, y)
+					smoothNorms[rightIdx].indices.push_back(vertices.size());
+					smoothNorms[rightIdx].norms.push_back(flatNorm);
+					vertices.push_back(VertexData(verts[rightIdx].position, verts[rightIdx].color, flatNorm));
+
+					// up (x, y+1)
+					smoothNorms[upIdx].indices.push_back(vertices.size());
+					smoothNorms[upIdx].norms.push_back(flatNorm);
+					vertices.push_back(VertexData(verts[upIdx].position, verts[upIdx].color, flatNorm));
+				}
+				// if we are at the last col and the shape should be connected horizontally, 
+				// add the normal for the first triangle as well
+				else if (connectedHoriz && x == cols - 1) {
+					// get normal for first triangle in the row (first, right, up)
+					vec3 flatNorm = calcNormFromTriangle(cols * y + 0, cols * y + 1, cols * (y+1) + 0, verts);
+
+					// current (x, y)
+					smoothNorms[curIdx].norms.push_back(flatNorm);
+
+					// up (x, y+1)
+					smoothNorms[upIdx].norms.push_back(flatNorm);
+				}
 			}
 
-			// if we are at any col but the last, construct the following triangle
-			if (x != cols - 1) {
-				// get the flat-shaded normal for this triangle
-				vec3 flatNorm = calcNormFromTriangle(curIdx, rightIdx, upIdx, verts);
+			// if we are at the first row and the shape should be connected vertically,
+			// add the normal for the last triangle in the column as well
+			if (y == 0 && connectedVert) {
 
-				// current (x, y)
-				smoothNorms[curIdx].indices.push_back(vertices.size());
-				smoothNorms[curIdx].norms.push_back(flatNorm);
-				vertices.push_back(VertexData(verts[curIdx].position, verts[curIdx].color, flatNorm));
+				if (x < cols - 1) {
+					// get normal for last triangle in column (down and right, right, last)
+					vec3 flatNorm = calcNormFromTriangle(
+						cols * (rows-2) + x+1, 
+						cols * (rows-1) + x+1, 
+						cols * (rows-1) + x, verts);
 
-				// right (x+1, y)
-				smoothNorms[rightIdx].indices.push_back(vertices.size());
-				smoothNorms[rightIdx].norms.push_back(flatNorm);
-				vertices.push_back(VertexData(verts[rightIdx].position, verts[rightIdx].color, flatNorm));
+					// current (x, y)
+					smoothNorms[curIdx].norms.push_back(flatNorm);
 
-				// up (x, y+1)
-				smoothNorms[upIdx].indices.push_back(vertices.size());
-				smoothNorms[upIdx].norms.push_back(flatNorm);
-				vertices.push_back(VertexData(verts[upIdx].position, verts[upIdx].color, flatNorm));
+					// right (x+1, y)
+					smoothNorms[rightIdx].norms.push_back(flatNorm);
+				}
 			}
+			// if we are at the last row and the shape should be connected vertically,
+			// add the normal for the first triangle in the column as well
+			if (y == rows - 1 && connectedVert) {
 
+				if (x < cols - 1) {
+					// get normal for first triangle in column (first, right, up)
+					vec3 flatNorm = calcNormFromTriangle(0 + x, 0 + x+1, cols + x, verts);
+
+					// current (x, y)
+					smoothNorms[curIdx].norms.push_back(flatNorm);
+
+					// right (x+1, y)
+					smoothNorms[rightIdx].norms.push_back(flatNorm);
+				}
+			}
 		}
-
 	}
 
 	// Go through and give 'vertices' the correct normals

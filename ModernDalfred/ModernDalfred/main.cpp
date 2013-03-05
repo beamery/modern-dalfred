@@ -60,8 +60,9 @@ void DisplayFunc() {
 	mat4 projection = perspective(window.fov, window.window_aspect, 0.1f, 1000.0f);
 
 	// PERFORM CAMERA TRANSFORMS
-	// put camera 4m above the scene and pull it back 10m
 	mvs.active = translate(mvs.active, vec3(0.0f, -1.0f, -4.0f));
+	// put camera 4m above the scene and pull it back 10m
+	//mvs.active = translate(mvs.active, vec3(0.0f, -4.0f, -10.0f));
 	//mvs.active = rotate(mvs.active, 30.0f, vec3(1.0f, 0.0f, 0.0f));
 	mvs.active = rotate(mvs.active, options.rotX, vec3(1.0f, 0.0f, 0.0f));
 	mvs.active = rotate(mvs.active, options.rotY, vec3(0.0f, 1.0f, 0.0f));

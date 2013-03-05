@@ -28,7 +28,7 @@ bool Torus::init(float radius, float thickness, int bigSlices, int littleSlices)
 		}
 	}
 	// one added to each due to the extra vertex
-	return mesh.init(data, littleSlices + 1, bigSlices + 1);
+	return mesh.init(data, littleSlices + 1, bigSlices + 1, true, true);
 }
 
 
