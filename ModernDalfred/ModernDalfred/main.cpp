@@ -32,6 +32,7 @@ struct Window {
 struct Options {
 	int shader;
 	float rotX, rotY;
+	bool wireframe;
 } options;
 
 struct Camera {
@@ -50,6 +51,7 @@ void DisplayFunc() {
 		return;
 
 	glEnable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, options.wireframe ? GL_LINE : GL_FILL);
 	glViewport(0, 0, window.size.x, window.size.y);
 	glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -109,6 +111,9 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 		break;
 	case 's':
 		options.shader = (options.shader + 1) % 3;
+		break;
+	case 'w':
+		options.wireframe = !options.wireframe;
 		break;
 	case 'x':
 	case 27:
@@ -216,6 +221,7 @@ void testMesh() {
 int main(int argc, char * argv[]) {
 	options.shader = 0;
 	options.rotX = options.rotY = 0.0f;
+	options.wireframe = false;
 	window.fov = 50.0f;
 	
 	glutInit(&argc, argv);

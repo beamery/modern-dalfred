@@ -27,7 +27,7 @@ bool StoolModel::initMesh() {
 	if (!stemCylinder.init(STEM_DIAM / 2, STEM_DIAM / 2, 10, STEM_LENGTH)) return false;
 	if (!stemBottom.init(EPSILON, STEM_DIAM / 2, 10)) return false;
 	if (!leg.init()) return false;
-	if (!ring.init(RING_OUTER_RAD, RING_THICKNESS, 32, 10)) return false;
+	if (!ring.init(RING_OUTER_RAD, RING_THICKNESS, 20, 8)) return false;
 	if (!topDiskCylinder.init(TOP_DISK_RAD, TOP_DISK_RAD, 16, DISK_THICKNESS)) return false;
 	if (!topDiskSurface.init(STEM_DIAM / 2, TOP_DISK_RAD, 16)) return false;	
 	if (!bottomDiskCylinder.init(BOT_DISK_RAD, BOT_DISK_RAD, 16, DISK_THICKNESS)) return false;
