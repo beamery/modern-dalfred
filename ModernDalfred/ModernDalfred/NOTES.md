@@ -21,7 +21,28 @@ Generating meshes
   simply be a way to grab a normal vector
 
 
-Adding some inheritance
--------------------------
-- Right now, I have a lot of redundant code in the drawable objects
-  - At some point, I'd like to encapsulate that into an inheritance tree
+Next
+======
+- Not going to worry about optimizing my stool rendering for now
+- Next step is to reorganize shaders and make some debugging views off of the debugging
+  shader comments I already have inserted
+- While I do that, I should think of an environment that I want to model
+
+Environment Ideas
+=================
+- Den
+  - Stools at table, possibly with chairs at other spots in the room
+  - Bookcase maybe
+  - Definitely a fireplace
+	- That means figuring out how to make a particle generator
+  - Need texturing (I think)
+  - Maybe add point lighting?
+
+- Outdoors
+  - Could make a procedurally generated landscape
+  - Need trees
+  - Billboards for grass
+	- Could also make a procedurally generated grass texture
+  - Need to figure out texturing
+  - Sounds more difficult
+
