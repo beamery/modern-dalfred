@@ -20,6 +20,8 @@ uniform mat4 projMat;
 uniform mat4 normalMat;
 uniform mat4 mvp;
 
+uniform int view;
+
 void main() {
     // convert normal and position to eye coordinates
     vec3 eyeNorm = vec3(normalize(mat3(normalMat) * vertexNormal));
@@ -43,17 +45,29 @@ void main() {
     if (normDotLight > 0.0) {
         specular = Ls * Ks * pow(max(dot(lightReflect, vxToEye), 0.0), shine);
     }
-    lightIntensity = ambient + diffuse + specular;
-    //lightIntensity = ambient + diffuse;
-    //lightIntensity = ambient;
-    //lightIntensity = diffuse;
-    //lightIntensity = specular;
-    //if (dot(lightReflect, vxToEye) > 0.9) 
-        //lightIntensity = vec3(dot(lightReflect, vxToEye));
-    //else
-        //lightIntensity = lightReflect;
-        //lightIntensity = eyeNorm;
-
+    switch (view) {
+    case 0:
+        lightIntensity = ambient + diffuse + specular;
+        break;
+    case 1:
+        lightIntensity = ambient + diffuse;
+        break;
+    case 2:
+        lightIntensity = ambient;
+        break;
+    case 3:
+        lightIntensity = diffuse;
+        break;
+    case 4:
+        lightIntensity = specular;
+        break;
+    case 5:
+        lightIntensity = eyeNorm;
+        break;
+    case 6:
+        lightIntensity = vec3(dot(lightReflect, vxToEye));
+        break;
+    }
 
     // pass along vertex position
     gl_Position = mvp * vec4(vertexPosition, 1.0);

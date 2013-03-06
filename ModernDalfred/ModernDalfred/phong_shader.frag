@@ -17,6 +17,8 @@ uniform float shine;
 uniform mat4 mvMat;
 uniform mat4 normalMat;
 
+uniform int view;
+
 void main() {
     // convert normal and position to eye coordinates
     vec3 eyeNorm = vec3(normalize(mat3(normalMat) * normal));
@@ -40,18 +42,31 @@ void main() {
     if (normDotLight > 0.0) {
         specular = Ls * Ks * pow(max(dot(lightReflect, vxToEye), 0.0), shine);
     }
-    vec3 lightIntensity = ambient + diffuse + specular;
-    //lightIntensity = vec3(normDotLight);
-    //lightIntensity = ambient + diffuse;
-    //lightIntensity = ambient;
-    //lightIntensity = diffuse;
-    //lightIntensity = specular;
-    //if (dot(lightReflect, vxToEye) > 0.9) 
-        //lightIntensity = vec3(dot(lightReflect, vxToEye));
-    //else
-        //lightIntensity = lightReflect;
-        //lightIntensity = eyeNorm;
-
+    
+    vec3 lightIntensity;
+    switch (view) {
+    case 0:
+        lightIntensity = ambient + diffuse + specular;
+        break;
+    case 1:
+        lightIntensity = ambient + diffuse;
+        break;
+    case 2:
+        lightIntensity = ambient;
+        break;
+    case 3:
+        lightIntensity = diffuse;
+        break;
+    case 4:
+        lightIntensity = specular;
+        break;
+    case 5:
+        lightIntensity = eyeNorm;
+        break;
+    case 6:
+        lightIntensity = vec3(dot(lightReflect, vxToEye));
+        break;
+    }
 
     fragColor = vec4(lightIntensity, 1.0);
 }

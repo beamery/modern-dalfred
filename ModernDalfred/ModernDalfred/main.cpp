@@ -18,6 +18,8 @@
 #include "Mesh.h"
 #include "MatrixStack.h"
 
+#define NUM_VIEWS 7
+
 using namespace std;
 using namespace glm;
 
@@ -33,7 +35,11 @@ struct Options {
 	int shader;
 	float rotX, rotY;
 	bool wireframe;
+	GLint shaderView;
+	Shader *currentShader;
 } options;
+
+vector<char*> viewStrings;
 
 struct Camera {
 	vec3 position;
@@ -70,14 +76,21 @@ void DisplayFunc() {
 	mvs.active = rotate(mvs.active, options.rotY, vec3(0.0f, 1.0f, 0.0f));
 	// END CAMERA TRANSFORMS
 
-	if (options.shader == 0)
+	if (options.shader == 0) {
+		options.currentShader = &shaders["flatShader"];
 		scene.draw(shaders["flatShader"], mvs, projection, window.size, time);
-	else if (options.shader == 1)
+	}
+	else if (options.shader == 1) {
+		options.currentShader = &shaders["gouraudShader"];
 		scene.draw(shaders["gouraudShader"], mvs, projection, window.size, time);
+	}
 	else if (options.shader == 2) {
+		options.currentShader = &shaders["phongShader"];
 		scene.draw(shaders["phongShader"], mvs, projection, window.size, time);
 	}
-
+	// set the view number
+	options.currentShader->setUniform("view", options.shaderView);
+	scene.draw(*options.currentShader, mvs, projection, window.size, time);
 	
 	mvs.pop();
 	
@@ -143,6 +156,15 @@ void SpecialFunc(int c, int x, int y) {
 		//scene.moveLight(0.0f, 1.0f);
 		options.rotX = std::max(-89.0f, options.rotX - 1.0f);
 		break;
+	// F1 cycles views
+	case GLUT_KEY_F1:
+		options.shaderView = (options.shaderView + 1) % NUM_VIEWS;
+		cout << viewStrings[options.shaderView] << endl;
+		break;
+	// F2 resets to the finished view
+	case GLUT_KEY_F2:
+		options.shaderView = 0;
+		break;
 	}
 
 }
@@ -182,6 +204,7 @@ void initShaders() {
 	gouraudShader->getUniformLocation("Ks");
 	gouraudShader->getUniformLocation("Ls");
 	gouraudShader->getUniformLocation("shine");
+	gouraudShader->getUniformLocation("view");
 	shaders["gouraudShader"] = *gouraudShader;
 
 	Shader *flatShader =  new Shader();
@@ -194,26 +217,35 @@ void initShaders() {
 	flatShader->getUniformLocation("Ks");
 	flatShader->getUniformLocation("Ls");
 	flatShader->getUniformLocation("shine");
+	flatShader->getUniformLocation("view");
 	shaders["flatShader"] = *flatShader;
 
 	Shader *phongShader =  new Shader();
-	flatShader->init("phong_shader.vert", "phong_shader.frag");
-	flatShader->getUniformLocation("lightPosition");
-	flatShader->getUniformLocation("Kd");
-	flatShader->getUniformLocation("Ld");
-	flatShader->getUniformLocation("Ka");
-	flatShader->getUniformLocation("La");
-	flatShader->getUniformLocation("Ks");
-	flatShader->getUniformLocation("Ls");
-	flatShader->getUniformLocation("shine");
-	shaders["phongShader"] = *flatShader;
+	phongShader->init("phong_shader.vert", "phong_shader.frag");
+	phongShader->getUniformLocation("lightPosition");
+	phongShader->getUniformLocation("Kd");
+	phongShader->getUniformLocation("Ld");
+	phongShader->getUniformLocation("Ka");
+	phongShader->getUniformLocation("La");
+	phongShader->getUniformLocation("Ks");
+	phongShader->getUniformLocation("Ls");
+	phongShader->getUniformLocation("shine");
+	phongShader->getUniformLocation("view");
+	shaders["phongShader"] = *phongShader;
 }
 
 void initScene() {
 	scene.init();
 }
 
-void testMesh() {
+void setViewStrings() {
+	viewStrings.push_back("View 0 - Finished View (Ambient + Diffuse + Specular");
+	viewStrings.push_back("View 1 - Ambient + Diffuse");
+	viewStrings.push_back("View 2 - Ambient");
+	viewStrings.push_back("View 3 - Diffuse");
+	viewStrings.push_back("View 4 - Specular");
+	viewStrings.push_back("View 5 - Normal relative to eye");
+	viewStrings.push_back("View 6 - Specular Dot Product");
 }
 
 
@@ -222,6 +254,7 @@ int main(int argc, char * argv[]) {
 	options.shader = 0;
 	options.rotX = options.rotY = 0.0f;
 	options.wireframe = false;
+	options.shaderView = 0;
 	window.fov = 50.0f;
 	
 	glutInit(&argc, argv);
@@ -243,5 +276,6 @@ int main(int argc, char * argv[]) {
 	}
 	initShaders();
 	initScene();
+	setViewStrings();
 	glutMainLoop();
 }
