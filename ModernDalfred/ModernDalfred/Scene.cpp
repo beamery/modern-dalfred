@@ -80,6 +80,7 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 
 	//mvs.active = translate(mvs.active, vec3(0.0f, 1.0f, 0.0f));
 	//torus.draw(shader, mvs.active, proj);
+	//sDisk.draw(shader, mvs.active, proj);
 
 	// perform transforms on scene objects
 	//mvs.active = translate(mvs.active, vec3(0.0f, 12.0f, -5.0f));
@@ -95,9 +96,8 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 
 	// scale stools down to inches
 	mvs.active = scale(mvs.active, vec3(METERS_PER_INCH, METERS_PER_INCH, METERS_PER_INCH));
-	success = stoolModel.draw(shader, mvs, proj);
-	if (!success) return false;
 
+	// draw stools
 	for (auto i = stools.begin(); i != stools.end(); i++) {
 		success = i->draw(shader, mvs, proj);
 		if (!success) return false;

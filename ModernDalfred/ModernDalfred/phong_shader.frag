@@ -20,8 +20,12 @@ uniform mat4 normalMat;
 uniform int view;
 
 void main() {
+    vec3 norm = normal;
+    if (!gl_FrontFacing) {
+        norm = -norm;
+    }
     // convert normal and position to eye coordinates
-    vec3 eyeNorm = vec3(normalize(mat3(normalMat) * normal));
+    vec3 eyeNorm = vec3(normalize(mat3(normalMat) * norm));
     //vec3 eyeNorm = vec3(vec4(normal, 1.0));
     vec4 eyePos = mvMat * vec4(position, 1.0);
 

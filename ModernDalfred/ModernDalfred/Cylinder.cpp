@@ -39,7 +39,7 @@ bool Cylinder::init(float innerRad, float outerRad, int slices, float height) {
 
 
 	// slices + 1 to take care of the extra vertex for continuity in each row
-	return mesh.init(data, 2, slices + 1);
+	return mesh.init(data, 2, slices + 1, true);
 }
 
 bool Cylinder::draw(Shader &shader, mat4 &mv, const mat4 &proj) {

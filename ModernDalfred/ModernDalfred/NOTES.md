@@ -24,8 +24,6 @@ Generating meshes
 Next
 ======
 - Not going to worry about optimizing my stool rendering for now
-- Next step is to reorganize shaders and make some debugging views off of the debugging
-  shader comments I already have inserted
 - While I do that, I should think of an environment that I want to model
 
 Environment Ideas
