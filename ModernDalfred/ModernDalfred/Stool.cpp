@@ -216,8 +216,11 @@ Stool::Stool(StoolModel *model, vec3 position) : model(model), position(position
  * Draw the stool's model at the stool's location
  */
 bool Stool::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj) {
-	
+	mvs.push();
 	mvs.active = translate(mvs.active, position);
-	return model->draw(shader, mvs, proj);
+	bool success = model->draw(shader, mvs, proj);
+	mvs.pop();
+
+	return success;
 }
 

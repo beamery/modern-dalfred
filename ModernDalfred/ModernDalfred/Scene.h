@@ -21,6 +21,8 @@
 #include "Cylinder.h"
 #include "Torus.h"
 #include "Stool.h"
+#include "Table.h"
+#include "Vase.h"
 
 using namespace std;
 using namespace glm;
@@ -38,11 +40,13 @@ private:
 	StoolModel stoolModel;
 	vector<Stool> stools;
 
+	TableModel tableModel;
+	VaseModel vaseModel;
+
 	Grid grid;
 	Cube cube;
 	Cylinder sDisk;
 	Torus torus;
-
 
 	vec4 lightPos;
 	vec3 lightDiffuse;

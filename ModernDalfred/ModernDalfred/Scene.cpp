@@ -10,19 +10,20 @@ Scene::Scene() :
 	grid(vec3(0.6f, 0.8f, 0.6f), vec3(0.6f, 0.8f, 0.6f), vec3(0.4f, 0.8f, 0.4f), 15.0f),
 	sDisk(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 1.0f, 1.0f), 40.0f),
 	torus(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 1.0f, 1.0f), 40.0f),
-	stoolModel(vec3(0.0f, 1.0f, 1.0f))
+	stoolModel(vec3(0.3f, 0.2f, 0.2f)),
+	tableModel(vec3(0.6f, 0.4f, 0.4f)),
+	vaseModel(vec3(1.0f, 1.0f, 1.0f), 14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10)
 {
-	lightPos = vec4(0.0f, 20.0f, 0.0f, 0.0f);
+	lightPos = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	lightDiffuse = vec3(0.4f, 0.4f, 0.4f);
 	lightAmbient = vec3(0.2f, 0.2f, 0.2f);
 	lightSpecular = vec3(0.4f, 0.4f, 0.4f);
 
-	for (int i = 0; i < 5; i++) {
-		float x = float((rand() % 120) - 60);
-		float z = float((rand() % 120) - 60);
-		stools.push_back(Stool(&stoolModel, vec3(x, 0, z)));
-	}
-
+	// add stools to surround the table
+	stools.push_back(Stool(&stoolModel, vec3(0.0f, 0.0f, 30.0f)));
+	stools.push_back(Stool(&stoolModel, vec3(0.0f, 0.0f, -30.0f)));
+	stools.push_back(Stool(&stoolModel, vec3(30.0f, 0.0f, 0.0f)));
+	stools.push_back(Stool(&stoolModel, vec3(-30.0f, 0.0f, 0.0f)));
 }
 
 /*
@@ -39,6 +40,12 @@ bool Scene::init() {
 	bool success = stoolModel.initMesh();
 	if (!success) return false;
 
+	success = tableModel.initMesh();
+	if (!success) return false;
+
+	success = vaseModel.initMesh();
+	if (!success) return false;
+
 	success = grid.init(GRID_SIZE);
 	if (!success) return false;
 
@@ -47,6 +54,7 @@ bool Scene::init() {
 
 	success = sDisk.init(1.0f, 2.0f, 10, 1.0f);
 	if (!success) return false;
+
 	success = torus.init(4.0f, 0.5f, 20, 20);
 	if (!success) return false;
 
@@ -102,6 +110,15 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 		success = i->draw(shader, mvs, proj);
 		if (!success) return false;
 	}
+
+	// draw table
+	success = tableModel.draw(shader, mvs, proj);
+	if (!success) return false;
+
+	// draw vase
+	mvs.active = translate(mvs.active, vec3(0.0f, TABLE_HEIGHT, 0.0f));
+	success = vaseModel.draw(shader, mvs, proj);	
+	if (!success) return false;
 
 	mvs.pop();
 	return true;

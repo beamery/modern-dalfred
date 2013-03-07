@@ -69,6 +69,12 @@
     <ClCompile Include="Torus.cpp">
       <Filter>Source Files\Models</Filter>
     </ClCompile>
+    <ClCompile Include="Table.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="Vase.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MatrixStack.h">
@@ -111,6 +117,12 @@
       <Filter>Header Files\Models</Filter>
     </ClInclude>
     <ClInclude Include="Torus.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Table.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Vase.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
   </ItemGroup>

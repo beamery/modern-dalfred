@@ -92,9 +92,11 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Stool.cpp" />
+    <ClCompile Include="Table.cpp" />
     <ClCompile Include="Torus.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="Vase.cpp" />
     <ClCompile Include="VertexData.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -108,9 +110,11 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Stool.h" />
+    <ClInclude Include="Table.h" />
     <ClInclude Include="Torus.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="Vase.h" />
     <ClInclude Include="VertexData.h" />
   </ItemGroup>
   <ItemGroup>
