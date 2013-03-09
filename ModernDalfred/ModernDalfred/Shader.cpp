@@ -196,7 +196,7 @@ GLuint Shader::getUniformLocation(const char *name) {
 	glUseProgram(0);
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::getUniformLocation - on exit");
 
 	return handle;
 }
@@ -207,77 +207,77 @@ GLuint Shader::getUniformLocation(const char *name) {
  */
 void Shader::setUniform(const char *name, const vec2 &v) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on entry");
 	
 	glUniform2fv(uniforms[name], 1, value_ptr(v));
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on exit");
 }
 void Shader::setUniform(const char *name, const ivec2 &v) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on entry");
 	
 	glUniform2iv(uniforms[name], 1, value_ptr(v));
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on exit");
 }
 void Shader::setUniform(const char *name, const vec3 &v) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on entry");
 	
 	glUniform3fv(uniforms[name], 1, value_ptr(v));
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on exit");
 }
 void Shader::setUniform(const char *name, const vec4 &v) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on entry");
 	
 	glUniform4fv(uniforms[name], 1, value_ptr(v));
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on exit");
 }
 
 void Shader::setUniform(const char *name, const mat4 &m) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on entry");
 	
 	glUniformMatrix4fv(uniforms[name], 1, GL_FALSE, value_ptr(m)); 
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on exit");
 }
 
 void Shader::setUniform(const char *name, float val) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on entry");
 	
 	glUniform1f(uniforms[name], val);
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on exit");
 }
 
 void Shader::setUniform(const char *name, int val) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on entry");
 	
 	glUniform1i(uniforms[name], val);
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on exit");
 }
 
 void Shader::setUniform(const char *name, bool val) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on entry");
 	
 	glUniform1i(uniforms[name], val);
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::getUniformLocation - on entry");
+	Utils::GLReturnedError("Shader::setUniform - on exit");
 }

@@ -89,6 +89,8 @@
     <ClCompile Include="MatrixStack.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="ParticleData.cpp" />
+    <ClCompile Include="ParticleFountain.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Stool.cpp" />
@@ -107,6 +109,8 @@
     <ClInclude Include="MatrixStack.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="ParticleData.h" />
+    <ClInclude Include="ParticleFountain.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Stool.h" />
@@ -120,17 +124,21 @@
   <ItemGroup>
     <None Include="colored_shader.frag" />
     <None Include="colored_shader.vert" />
-    <None Include="flat_shader.frag" />
-    <None Include="flat_shader.vert" />
-    <None Include="gouraud_shader.frag" />
-    <None Include="gouraud_shader.vert" />
+    <None Include="flat.frag" />
+    <None Include="flat.vert" />
+    <None Include="fountain.frag" />
+    <None Include="fountain.vert" />
+    <None Include="gouraud.frag" />
+    <None Include="gouraud.vert" />
     <None Include="NOTES.md" />
-    <None Include="pattern_shader.frag" />
-    <None Include="pattern_shader.vert" />
-    <None Include="phong_shader.frag" />
-    <None Include="phong_shader.vert" />
+    <None Include="pattern.frag" />
+    <None Include="pattern.vert" />
+    <None Include="phong.frag" />
+    <None Include="phong.vert" />
     <None Include="README.md" />
     <None Include="SOURCES.md" />
+    <None Include="wavy.frag" />
+    <None Include="wavy.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

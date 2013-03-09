@@ -23,6 +23,7 @@
 #include "Stool.h"
 #include "Table.h"
 #include "Vase.h"
+#include "ParticleFountain.h"
 
 using namespace std;
 using namespace glm;
@@ -33,8 +34,10 @@ public:
 	Scene();
 	~Scene();
 	bool init();
+	void update(float elapsedTime);
 	bool draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, const ivec2 &size, const float time);
 	void moveLight(float x, float z);
+	void setFountainShader(Shader *shader);
 
 private:
 	StoolModel stoolModel;
@@ -42,6 +45,9 @@ private:
 
 	TableModel tableModel;
 	VaseModel vaseModel;
+
+	ParticleFountain fountain;
+	Shader *fountainShader;
 
 	Grid grid;
 	Cube cube;

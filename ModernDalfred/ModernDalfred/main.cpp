@@ -6,7 +6,6 @@
 #include <iostream>
 #include <assert.h>
 #include <vector>
-#include <map>
 #include <gl/glew.h>
 #include <gl/freeglut.h>
 #include <glm/glm.hpp>
@@ -17,6 +16,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "MatrixStack.h"
+#include "Utils.h"
 
 #define NUM_VIEWS 7
 
@@ -35,8 +35,10 @@ struct Options {
 	int shader;
 	float rotX, rotY;
 	bool wireframe;
-	GLint shaderView;
+	int shaderView;
 	Shader *currentShader;
+	float oldTime;
+	float startTime;
 } options;
 
 vector<char*> viewStrings;
@@ -49,7 +51,7 @@ struct Camera {
 
 
 Scene scene;
-map<string, Shader> shaders;
+vector<Shader*> shaders;
 MatrixStack mvs;
 
 void DisplayFunc() {
@@ -64,7 +66,12 @@ void DisplayFunc() {
 
 	mvs.push();
 
-	float time = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
+	// time since start of program
+	float newTime = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f - options.startTime;
+	// time since last frame
+	float elapsedTime = newTime - options.oldTime;
+	options.oldTime = newTime;
+
 	mat4 projection = perspective(window.fov, window.window_aspect, 0.1f, 1000.0f);
 
 	// PERFORM CAMERA TRANSFORMS
@@ -76,21 +83,16 @@ void DisplayFunc() {
 	mvs.active = rotate(mvs.active, options.rotY, vec3(0.0f, 1.0f, 0.0f));
 	// END CAMERA TRANSFORMS
 
-	if (options.shader == 0) {
-		options.currentShader = &shaders["flatShader"];
-		scene.draw(shaders["flatShader"], mvs, projection, window.size, time);
-	}
-	else if (options.shader == 1) {
-		options.currentShader = &shaders["gouraudShader"];
-		scene.draw(shaders["gouraudShader"], mvs, projection, window.size, time);
-	}
-	else if (options.shader == 2) {
-		options.currentShader = &shaders["phongShader"];
-		scene.draw(shaders["phongShader"], mvs, projection, window.size, time);
-	}
-	// set the view number
+	// setup the current shader
+	options.currentShader = shaders[options.shader];
+	options.currentShader->use();
 	options.currentShader->setUniform("view", options.shaderView);
-	scene.draw(*options.currentShader, mvs, projection, window.size, time);
+
+	// update the scene with the amount of time since the last frame
+	scene.update(elapsedTime);
+
+	// draw the scene using the total elapsed time
+	scene.draw(*options.currentShader, mvs, projection, window.size, newTime);
 	
 	mvs.pop();
 	
@@ -123,7 +125,7 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 		Mesh::drawPoints = !Mesh::drawPoints;
 		break;
 	case 's':
-		options.shader = (options.shader + 1) % 3;
+		options.shader = (options.shader + 1) % shaders.size();
 		break;
 	case 'w':
 		options.wireframe = !options.wireframe;
@@ -194,21 +196,8 @@ void DisplayInstructions() {
 }
 
 void initShaders() {
-	Shader *gouraudShader = new Shader();
-	gouraudShader->init("gouraud_shader.vert", "gouraud_shader.frag");
-	gouraudShader->getUniformLocation("lightPosition");
-	gouraudShader->getUniformLocation("Kd");
-	gouraudShader->getUniformLocation("Ld");
-	gouraudShader->getUniformLocation("Ka");
-	gouraudShader->getUniformLocation("La");
-	gouraudShader->getUniformLocation("Ks");
-	gouraudShader->getUniformLocation("Ls");
-	gouraudShader->getUniformLocation("shine");
-	gouraudShader->getUniformLocation("view");
-	shaders["gouraudShader"] = *gouraudShader;
-
 	Shader *flatShader =  new Shader();
-	flatShader->init("flat_shader.vert", "flat_shader.frag");
+	flatShader->init("flat.vert", "flat.frag");
 	flatShader->getUniformLocation("lightPosition");
 	flatShader->getUniformLocation("Kd");
 	flatShader->getUniformLocation("Ld");
@@ -218,10 +207,24 @@ void initShaders() {
 	flatShader->getUniformLocation("Ls");
 	flatShader->getUniformLocation("shine");
 	flatShader->getUniformLocation("view");
-	shaders["flatShader"] = *flatShader;
+	flatShader->getUniformLocation("time");
+	shaders.push_back(flatShader);
+
+	Shader *gouraudShader = new Shader();
+	gouraudShader->init("gouraud.vert", "gouraud.frag");
+	gouraudShader->getUniformLocation("lightPosition");
+	gouraudShader->getUniformLocation("Kd");
+	gouraudShader->getUniformLocation("Ld");
+	gouraudShader->getUniformLocation("Ka");
+	gouraudShader->getUniformLocation("La");
+	gouraudShader->getUniformLocation("Ks");
+	gouraudShader->getUniformLocation("Ls");
+	gouraudShader->getUniformLocation("shine");
+	gouraudShader->getUniformLocation("view");
+	shaders.push_back(gouraudShader);
 
 	Shader *phongShader =  new Shader();
-	phongShader->init("phong_shader.vert", "phong_shader.frag");
+	phongShader->init("phong.vert", "phong.frag");
 	phongShader->getUniformLocation("lightPosition");
 	phongShader->getUniformLocation("Kd");
 	phongShader->getUniformLocation("Ld");
@@ -231,11 +234,30 @@ void initShaders() {
 	phongShader->getUniformLocation("Ls");
 	phongShader->getUniformLocation("shine");
 	phongShader->getUniformLocation("view");
-	shaders["phongShader"] = *phongShader;
+	shaders.push_back(phongShader);
+
+	Shader *wavyShader = new Shader();
+	wavyShader->init("wavy.vert", "phong.frag");
+	wavyShader->getUniformLocation("lightPosition");
+	wavyShader->getUniformLocation("Kd");
+	wavyShader->getUniformLocation("Ld");
+	wavyShader->getUniformLocation("Ka");
+	wavyShader->getUniformLocation("La");
+	wavyShader->getUniformLocation("Ks");
+	wavyShader->getUniformLocation("Ls");
+	wavyShader->getUniformLocation("shine");
+	wavyShader->getUniformLocation("view");
+	//shaders.push_back(wavyShader);
+
 }
 
 void initScene() {
 	scene.init();
+
+	Shader *fountainShader = new Shader();
+	fountainShader->init("fountain.vert", "fountain.frag");
+	fountainShader->getUniformLocation("particleLifetime");
+	scene.setFountainShader(fountainShader);
 }
 
 void setViewStrings() {
@@ -255,6 +277,7 @@ int main(int argc, char * argv[]) {
 	options.rotX = options.rotY = 0.0f;
 	options.wireframe = false;
 	options.shaderView = 0;
+	options.oldTime = 0.0f;
 	window.fov = 50.0f;
 	
 	glutInit(&argc, argv);
@@ -277,5 +300,7 @@ int main(int argc, char * argv[]) {
 	initShaders();
 	initScene();
 	setViewStrings();
+
+	options.startTime = float(glutGet(GLUT_ELAPSED_TIME)) / 1000.0f;
 	glutMainLoop();
 }
