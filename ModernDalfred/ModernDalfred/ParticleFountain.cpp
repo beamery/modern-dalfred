@@ -1,10 +1,10 @@
 #include "ParticleFountain.h"
 
-ParticleFountain::ParticleFountain(int numParticles) {
+ParticleFountain::ParticleFountain(int numParticles) : drawBuf(1) {
 	
 	vec3 vel(0.0f);
 	float velocity, theta, phi;
-	float time = 0.0f, rate = 0.00075f;
+	float time = 0.0f, rate = 0.00050f;
 	for (int i = 0; i < numParticles; i++) {
 
 		// get the direction of the initial velocity
@@ -39,6 +39,7 @@ bool ParticleFountain::initGL() {
 	glGenBuffers(2, posBuf);
 	glGenBuffers(2, velBuf);
 	glGenBuffers(2, startBuf);
+	glGenBuffers(1, &initVelBuf);
 
 	// set up bundles 0 and 1
 	for (int i = 0; i < 2; i++) {
@@ -54,15 +55,22 @@ bool ParticleFountain::initGL() {
 		glBindBuffer(GL_ARRAY_BUFFER, velBuf[i]);
 		glBufferData(GL_ARRAY_BUFFER, velocities.size() * sizeof(vec3), &velocities[0], GL_STATIC_DRAW);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+		// set up initial velocity buffer
 
 		// set up start time buffer
 		glBindBuffer(GL_ARRAY_BUFFER, startBuf[i]);
 		glBufferData(GL_ARRAY_BUFFER, startTimes.size() * sizeof(GLfloat), &startTimes[0], GL_STATIC_DRAW);
 		glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(float), 0);
 
+		// set up initial velocity buffer
+		glBindBuffer(GL_ARRAY_BUFFER, initVelBuf);
+		glBufferData(GL_ARRAY_BUFFER, velocities.size() * sizeof(vec3), &velocities[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(vec3), 0);
+
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
+		glEnableVertexAttribArray(3);
 	}
 
 	// unbind handles
@@ -76,8 +84,8 @@ bool ParticleFountain::initGL() {
 	for (int i = 0; i < 2; i++) {
 		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, feedback[i]);
 		glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, posBuf[i]);
-		glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, velBuf[i]);
-		glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, startBuf[i]);
+		glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, velBuf[i]);
+		glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 2, startBuf[i]);
 	}
 
 	
@@ -106,21 +114,73 @@ void ParticleFountain::update(float elapsedTime) {
 
 }
 
-bool ParticleFountain::draw(Shader &shader, MatrixStack &mvs, mat4 proj, float elapsedTime) {
+bool ParticleFountain::draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj, float time) {
 	if (Utils::GLReturnedError("ParticleFountain::draw - on entry")) return false;
 
+	shader.use();
 	// set up fountain drawing
 	//glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glPointSize(3.0f);
+	glPointSize(1.0f);
 
+
+	// set up subroutine call
+	shader.setSubroutine(GL_VERTEX_SHADER, "update");
+
+	// set uniforms
 	mat4 mvp = proj * mvs.active;
-	shader.use();
-	shader.setUniform("time", elapsedTime);
+	shader.setUniform("time", time);
 	shader.setUniform("particleLifetime", PARTICLE_LIFETIME);
 	shader.setUniform("mvp", mvp);
 
+	////////// Update pass //////////
+	{
+		// disable rastering for the update pass
+		glEnable(GL_RASTERIZER_DISCARD);
+
+		// bind the feedback object for the buffers to be drawn next
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, feedback[drawBuf]);
+
+		// set up query log for debugging
+		GLuint query;
+		glGenQueries(1, &query);
+		glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
+
+		// draw points from input buffer with transform feedback
+		glBeginTransformFeedback(GL_POINTS);
+		glBindVertexArray(particleArray[1 - drawBuf]);
+		glDrawArrays(GL_POINTS, 0, positions.size());
+		glEndTransformFeedback();
+
+		// finish debug query
+		glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+		GLuint primWritten;
+		glGetQueryObjectuiv(query, GL_QUERY_RESULT, &primWritten);
+		//cout << "Primitives written: " << primWritten << endl;
+	}
+	
+	////////// Render pass //////////
+	{
+
+		// enable rendering
+		glDisable(GL_RASTERIZER_DISCARD);
+
+		shader.setSubroutine(GL_VERTEX_SHADER, "render");
+
+		// unbind the feedback object
+		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+
+		// draw the fountain
+		glBindVertexArray(particleArray[drawBuf]);
+		glDrawArrays(GL_POINTS, 0, positions.size());
+
+		// swap buffers
+		drawBuf = 1 - drawBuf;
+	}
+
+
+	/*
 	glBindVertexArray(particleArray[1]);
 	//glBindVertexArray(vertexArrayHandle);
 	//glDrawArrays(GL_POINTS, 0, particles.size());
@@ -130,6 +190,7 @@ bool ParticleFountain::draw(Shader &shader, MatrixStack &mvs, mat4 proj, float e
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
 	glBindVertexArray(0);
+	*/
 
 	if (Utils::GLReturnedError("ParticleFountain::draw - on exit")) return false;
 	return true;

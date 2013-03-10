@@ -3,34 +3,61 @@
 // This shader is used to simulate a particle fountain. It was taken from
 // the OpenGL 4.0 Shading Language Cookbook.
 
-// Initial velocity and start time
-layout (location = 1) in vec3 vertexInitVel;
-layout (location = 2) in float startTime;
+subroutine void renderPassType();
+subroutine uniform renderPassType renderPass;
 
+// Initial velocity and start time
+layout (location = 0) in vec3 vertexPosition;
+layout (location = 1) in vec3 vertexVelocity;
+layout (location = 2) in float vertexStartTime;
+layout (location = 3) in vec3 vertexInitVel;
+
+out vec3 position;
+out vec3 velocity;
+out float startTime;
 out float transparency;
 
-uniform float time; // animation time
-uniform vec3 gravity = vec3(0.0, -0.2, 0.0); // world coords
+uniform float time; // total time elapsed
+uniform float elapsedTime; // time elapsed since last frame
+uniform vec3 gravity = vec3(0.0, -0.5, 0.0); // world coords
 uniform float particleLifetime; // max particle particleLifetime
+
 uniform mat4 mvp;
 
-void main() {
+subroutine(renderPassType)
+void update() {
 
     // Assume initial position is (0,0,0)
-    vec3 pos = vec3(0.0);
-    transparency = 0.0;
+    position = vertexPosition;
+    velocity = vertexVelocity;
+    startTime = vertexStartTime;
 
     // particle doesn't exist until the start time
-    if (time > startTime) {
-        float t = time - startTime;
+    if (time >= startTime) {
+        float age = time - startTime;
 
-        if (t < particleLifetime) {
-            pos = vertexInitVel * t + gravity * t * t;
-            transparency = 1.0 - t / particleLifetime;
+        // if particle has lived its full life, recycle it
+        if (age > particleLifetime) {
+            position = vec3(0.0);
+            velocity = vertexInitVel;
+            startTime = time;
         }
+        // update the living particle
         else {
-            transparency = 0.0;
+            position += elapsedTime * velocity;
+            velocity += elapsedTime * gravity;
         }
     }
-    gl_Position = mvp * vec4(pos, 1.0);
+    gl_Position = mvp * vec4(position, 1.0);
+}
+
+subroutine(renderPassType)
+void render() {
+    float age = time - vertexStartTime;
+    transparency = 1.0 - age / particleLifetime;
+    gl_Position = mvp * vec4(vertexPosition, 1.0);
+}
+
+void main() {
+    renderPass();
 }

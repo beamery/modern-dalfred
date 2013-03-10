@@ -67,7 +67,8 @@ bool Scene::init() {
 
 
 void Scene::update(float elapsedTime) {
-
+	fountainShader->use();
+	fountainShader->setUniform("elapsedTime", elapsedTime);
 }
 
 
@@ -94,6 +95,9 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 
 	// draw the grid in meters
 	grid.draw(shader, mvs.active, proj);
+
+	// draw fountain - DEBUGGING
+	//fountain.draw(*fountainShader, mvs, proj, time);
 
 	//mvs.active = translate(mvs.active, vec3(0.0f, 1.0f, 0.0f));
 	//torus.draw(shader, mvs.active, proj);
@@ -151,6 +155,6 @@ void Scene::moveLight(float x, float z) {
 }
 
 
-void Scene::setFountainShader(Shader *shader) {
+void Scene::setFountainShader(ParticleShader *shader) {
 	fountainShader = shader;	
 }

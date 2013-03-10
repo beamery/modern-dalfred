@@ -254,9 +254,12 @@ void initShaders() {
 void initScene() {
 	scene.init();
 
-	Shader *fountainShader = new Shader();
+	ParticleShader *fountainShader = new ParticleShader();
 	fountainShader->init("fountain.vert", "fountain.frag");
 	fountainShader->getUniformLocation("particleLifetime");
+	fountainShader->getUniformLocation("elapsedTime");
+	fountainShader->getSubroutineLocation(GL_VERTEX_SHADER, "update");
+	fountainShader->getSubroutineLocation(GL_VERTEX_SHADER, "render");
 	scene.setFountainShader(fountainShader);
 }
 

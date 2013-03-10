@@ -15,6 +15,7 @@
 #include "ParticleData.h"
 #include "Utils.h"
 #include "Shader.h"
+#include "ParticleShader.h"
 #include "Constants.h"
 
 using namespace glm;
@@ -30,7 +31,7 @@ public:
 
 	void update(float elapsedTime);
 
-	bool draw(Shader &shader, MatrixStack &mvs, mat4 proj, float elapsedTime);
+	bool draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj, float time);
 	bool initGL();
 
 private:
@@ -45,6 +46,8 @@ private:
 	GLuint posBuf[2];
 	GLuint velBuf[2];
 	GLuint startBuf[2];
+	GLuint initVelBuf;
+	GLuint drawBuf;
 
 	GLuint vertexArrayHandle;
 	GLuint vertexBufferHandle;

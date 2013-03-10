@@ -83,7 +83,10 @@ bool Shader::init(char * vertex_shader_file, char * fragment_shader_file)
 	this->program_id = glCreateProgram();
 	glAttachShader(this->program_id, this->vertex_shader_id);
 	glAttachShader(this->program_id, this->fragment_shader_id);
+
+	// used for transform feedback
 	preLinkSetup();
+	
 	glLinkProgram(program_id);
 
 	glDeleteShader(vertex_shader_id);
@@ -203,82 +206,114 @@ GLuint Shader::getUniformLocation(const char *name) {
 }
 
 /*
+ * Get a subroutine location for this named uniform. Also stores the handle
+ * in a map, accessible by the uniform name. Handles using and un-using
+ * the shader program internally
+ */
+GLuint Shader::getSubroutineLocation(GLenum shaderType, const char *name) {
+	Utils::GLReturnedError("Shader::getSubroutineLocation - on entry");
+
+	glUseProgram(this->program_id);
+
+	GLuint handle = glGetSubroutineIndex(program_id, shaderType, name);
+
+	this->uniforms[name] = handle;
+
+	glUseProgram(0);
+
+	Utils::GLReturnedError("Shader::getSubroutineLocation - on exit");
+
+	return handle;
+}
+
+void Shader::setSubroutine(GLenum shaderType, const char *name) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::setSubroutine - on entry");
+
+	glUniformSubroutinesuiv(shaderType, 1, &uniforms[name]);
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::setSubroutine - on exit");
+}
+
+
+/*
  * The following methods set the named uniform to whatever is passed in as
  * the second parameter. The program must be in use to use these methods
  */
 void Shader::setUniform(const char *name, const vec2 &v) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on entry");
+	Utils::GLReturnedError("Shader::setUniform(vec2) - on entry");
 	
 	glUniform2fv(uniforms[name], 1, value_ptr(v));
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on exit");
+	Utils::GLReturnedError("Shader::setUniform(vec2) - on exit");
 }
 void Shader::setUniform(const char *name, const ivec2 &v) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on entry");
+	Utils::GLReturnedError("Shader::setUniform(ivec2) - on entry");
 	
 	glUniform2iv(uniforms[name], 1, value_ptr(v));
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on exit");
+	Utils::GLReturnedError("Shader::setUniform(ivec2) - on exit");
 }
 void Shader::setUniform(const char *name, const vec3 &v) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on entry");
+	Utils::GLReturnedError("Shader::setUniform(vec3) - on entry");
 	
 	glUniform3fv(uniforms[name], 1, value_ptr(v));
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on exit");
+	Utils::GLReturnedError("Shader::setUniform(vec3) - on exit");
 }
 void Shader::setUniform(const char *name, const vec4 &v) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on entry");
+	Utils::GLReturnedError("Shader::setUniform(vec4) - on entry");
 	
 	glUniform4fv(uniforms[name], 1, value_ptr(v));
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on exit");
+	Utils::GLReturnedError("Shader::setUniform(vec4) - on exit");
 }
 
 void Shader::setUniform(const char *name, const mat4 &m) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on entry");
+	Utils::GLReturnedError("Shader::setUniform(mat4) - on entry");
 	
 	glUniformMatrix4fv(uniforms[name], 1, GL_FALSE, value_ptr(m)); 
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on exit");
+	Utils::GLReturnedError("Shader::setUniform(mat4) - on exit");
 }
 
 void Shader::setUniform(const char *name, float val) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on entry");
+	Utils::GLReturnedError("Shader::setUniform(float) - on entry");
 	
 	glUniform1f(uniforms[name], val);
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on exit");
+	Utils::GLReturnedError("Shader::setUniform(float) - on exit");
 }
 
 void Shader::setUniform(const char *name, int val) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on entry");
+	Utils::GLReturnedError("Shader::setUniform(int) - on entry");
 	
 	glUniform1i(uniforms[name], val);
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on exit");
+	Utils::GLReturnedError("Shader::setUniform(int) - on exit");
 }
 
 void Shader::setUniform(const char *name, bool val) {
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on entry");
+	Utils::GLReturnedError("Shader::setUniform(bool) - on entry");
 	
 	glUniform1i(uniforms[name], val);
 
 	// check for GL errors
-	Utils::GLReturnedError("Shader::setUniform - on exit");
+	Utils::GLReturnedError("Shader::setUniform(bool) - on exit");
 }

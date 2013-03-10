@@ -15,6 +15,7 @@
 
 #include "MatrixStack.h"
 #include "Shader.h"
+#include "ParticleShader.h"
 #include "Mesh.h"
 #include "Grid.h"
 #include "Cube.h"
@@ -37,7 +38,7 @@ public:
 	void update(float elapsedTime);
 	bool draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, const ivec2 &size, const float time);
 	void moveLight(float x, float z);
-	void setFountainShader(Shader *shader);
+	void setFountainShader(ParticleShader *shader);
 
 private:
 	StoolModel stoolModel;
@@ -47,7 +48,7 @@ private:
 	VaseModel vaseModel;
 
 	ParticleFountain fountain;
-	Shader *fountainShader;
+	ParticleShader *fountainShader;
 
 	Grid grid;
 	Cube cube;
