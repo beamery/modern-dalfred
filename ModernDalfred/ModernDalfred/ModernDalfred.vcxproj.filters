@@ -81,6 +81,9 @@
     <ClCompile Include="ParticleData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MatrixStack.h">
@@ -135,6 +138,9 @@
       <Filter>Header Files\Models</Filter>
     </ClInclude>
     <ClInclude Include="ParticleData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

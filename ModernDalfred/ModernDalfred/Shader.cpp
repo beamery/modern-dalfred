@@ -83,6 +83,7 @@ bool Shader::init(char * vertex_shader_file, char * fragment_shader_file)
 	this->program_id = glCreateProgram();
 	glAttachShader(this->program_id, this->vertex_shader_id);
 	glAttachShader(this->program_id, this->fragment_shader_id);
+	preLinkSetup();
 	glLinkProgram(program_id);
 
 	glDeleteShader(vertex_shader_id);

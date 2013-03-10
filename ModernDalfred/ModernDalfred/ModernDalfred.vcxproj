@@ -91,6 +91,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ParticleData.cpp" />
     <ClCompile Include="ParticleFountain.cpp" />
+    <ClCompile Include="ParticleShader.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Stool.cpp" />
@@ -111,6 +112,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleData.h" />
     <ClInclude Include="ParticleFountain.h" />
+    <ClInclude Include="ParticleShader.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Stool.h" />

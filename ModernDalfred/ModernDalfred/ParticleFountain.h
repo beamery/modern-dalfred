@@ -34,7 +34,18 @@ public:
 	bool initGL();
 
 private:
-	vector<ParticleData> particles;
+	vector<vec3> positions;
+	vector<vec3> velocities;
+	vector<GLfloat> startTimes;
+
+	//vector<ParticleData> particles;
+
+	GLuint particleArray[2];
+	GLuint feedback[2];
+	GLuint posBuf[2];
+	GLuint velBuf[2];
+	GLuint startBuf[2];
+
 	GLuint vertexArrayHandle;
 	GLuint vertexBufferHandle;
 };

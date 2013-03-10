@@ -15,6 +15,7 @@ public:
 	
 	vec3 velocity;
 	float startTime;
+	vec3 position;
 };
 
 

@@ -4,8 +4,8 @@
 // the OpenGL 4.0 Shading Language Cookbook.
 
 // Initial velocity and start time
-layout (location = 0) in vec3 vertexInitVel;
-layout (location = 1) in float startTime;
+layout (location = 1) in vec3 vertexInitVel;
+layout (location = 2) in float startTime;
 
 out float transparency;
 

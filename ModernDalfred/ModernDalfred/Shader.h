@@ -30,10 +30,11 @@ using namespace glm;
 class Shader {
 public:
 	Shader();
-	~Shader();
+	virtual ~Shader();
 	void takeDown();
 	void use();
 	virtual bool init(char * vertex_shader_file, char * fragment_shader_file);
+	virtual void preLinkSetup() {}
 	virtual void customSetup();
 	void commonSetup(const float time, const vec2 &size, const mat4 &mvp);
 	std::stringstream getShaderLog(GLuint shader_id);
