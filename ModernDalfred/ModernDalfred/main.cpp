@@ -2,7 +2,6 @@
  * Brian Murray
  * CS 559 Project 2
  */
-
 #include <iostream>
 #include <assert.h>
 #include <vector>
@@ -55,6 +54,8 @@ vector<Shader*> shaders;
 MatrixStack mvs;
 
 void DisplayFunc() {
+
+
 	if (window.window_handle == -1)
 		return;
 
@@ -264,7 +265,7 @@ void initScene() {
 }
 
 void setViewStrings() {
-	viewStrings.push_back("View 0 - Finished View (Ambient + Diffuse + Specular");
+	viewStrings.push_back("View 0 - Finished View (Ambient + Diffuse + Specular)");
 	viewStrings.push_back("View 1 - Ambient + Diffuse");
 	viewStrings.push_back("View 2 - Ambient");
 	viewStrings.push_back("View 3 - Diffuse");

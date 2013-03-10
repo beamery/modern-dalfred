@@ -122,7 +122,7 @@ bool ParticleFountain::draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj,
 	//glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glPointSize(1.0f);
+	glPointSize(2.0f);
 
 
 	// set up subroutine call
@@ -143,9 +143,9 @@ bool ParticleFountain::draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj,
 		glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, feedback[drawBuf]);
 
 		// set up query log for debugging
-		GLuint query;
-		glGenQueries(1, &query);
-		glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
+		//GLuint query;
+		//glGenQueries(1, &query);
+		//glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, query);
 
 		// draw points from input buffer with transform feedback
 		glBeginTransformFeedback(GL_POINTS);
@@ -154,9 +154,10 @@ bool ParticleFountain::draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj,
 		glEndTransformFeedback();
 
 		// finish debug query
-		glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
-		GLuint primWritten;
-		glGetQueryObjectuiv(query, GL_QUERY_RESULT, &primWritten);
+		//glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+		//GLuint primWritten;
+		//glGetQueryObjectuiv(query, GL_QUERY_RESULT, &primWritten);
+		//glDeleteQueries(1, &query);
 		//cout << "Primitives written: " << primWritten << endl;
 	}
 	

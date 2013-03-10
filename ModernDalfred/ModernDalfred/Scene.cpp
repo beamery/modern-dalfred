@@ -74,6 +74,7 @@ void Scene::update(float elapsedTime) {
 
 bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, 
 				 const ivec2 &size, const float time) {
+
 	shader.use();
 	shader.setUniform("time", time);
 	//shader.setUniform("size", size);
@@ -146,6 +147,9 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	if (!success) return false;
 
 	mvs.pop();
+
+
+	
 	return true;
 }
 
