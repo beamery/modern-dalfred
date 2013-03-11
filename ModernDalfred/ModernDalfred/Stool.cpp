@@ -1,19 +1,19 @@
 #include "Stool.h"
 
 // construct objects
-StoolModel::StoolModel(vec3 color) : color(color), 
-	seatSurface(color, color, color, 50.0f), 
-	seatSide(color, color, color, 50.0f),
-	largeSkewedDisk(color, color, color, 50.0f),
-	smallSkewedDisk(color, color, color, 50.0f),
-	stemCylinder(color, color, color, 50.0f),
-	stemBottom(color, color, color, 50.0f),
-	leg(color, color, color, 50.0f),
-	ring(color, color, color, 50.0f),
-	topDiskCylinder(color, color, color, 50.0f),
-	topDiskSurface(color, color, color, 50.0f),
-	bottomDiskCylinder(color, color, color, 50.0f),
-	bottomDiskSurface(color, color, color, 50.0f)
+StoolModel::StoolModel(vec3 ambient, vec3 diffuse, vec3 specular) :
+	seatSurface(ambient, diffuse, specular, 50.0f), 
+	seatSide(ambient, diffuse, specular, 50.0f),
+	largeSkewedDisk(ambient, diffuse, specular, 50.0f),
+	smallSkewedDisk(ambient, diffuse, specular, 50.0f),
+	stemCylinder(ambient, diffuse, specular, 50.0f),
+	stemBottom(ambient, diffuse, specular, 50.0f),
+	leg(ambient, diffuse, specular, 50.0f),
+	ring(ambient, diffuse, specular, 50.0f),
+	topDiskCylinder(ambient, diffuse, specular, 50.0f),
+	topDiskSurface(ambient, diffuse, specular, 50.0f),
+	bottomDiskCylinder(ambient, diffuse, specular, 50.0f),
+	bottomDiskSurface(ambient, diffuse, specular, 50.0f)
 {}
 
 // initialize object meshes
@@ -44,8 +44,11 @@ bool StoolModel::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj) {
 	mvs.active = translate(mvs.active, vec3(0.0f, STOOL_HEIGHT, 0.0f));
 
 	// seat and stem rendering
+	mvs.push();
+	mvs.active = translate(mvs.active, vec3(0.0f, heightAdjust, 0.0f));
 	success = drawSeatAndStem(shader, mvs, proj);
 	if (!success) return false;
+	mvs.pop();
 
 	// leg rendering
 	success = drawLeg(shader, mvs, proj, 0);
@@ -203,6 +206,12 @@ bool StoolModel::drawDisk(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	return true;
 }
 
+void StoolModel::adjustHeight(float amount) {
+	heightAdjust += amount;
+	heightAdjust = std::max(0.2f, heightAdjust);
+	heightAdjust = std::min(heightAdjust, 4.575f);
+}
+
 
 /////////// STOOL METHODS ///////////
 
@@ -223,4 +232,3 @@ bool Stool::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj) {
 
 	return success;
 }
-

@@ -52,8 +52,11 @@ using namespace glm;
 class StoolModel {
 
 public:
-	StoolModel(vec3 color);
+	StoolModel(vec3 ambient, vec3 diffuse, vec3 specular);
 	bool draw(Shader &shader, MatrixStack &mvs, const mat4 &proj);
+
+	// adjust the height of the stool (up or down)
+	void adjustHeight(float amount);
 
 	// initialize the meshes of the ojbects making up this stool.
 	bool initMesh();
@@ -64,10 +67,6 @@ private:
 	bool drawDisk(Shader &shader, MatrixStack &mvs, const mat4 &proj, float radius, float height);
 	bool drawDisk(Shader &shader, MatrixStack &mvs, const mat4 &proj, Disk &surface, Cylinder &cylinder, float height);
 
-	// Declare the objects making up this stool as static. This way,
-	// the meshes for the objects will only have to be initialized once, rather
-	// than for every stool that we want to create.
-	vec3 color;
 	// seat and stem
 	Disk seatSurface;
 	Cylinder seatSide;
@@ -85,6 +84,8 @@ private:
 	Cylinder bottomDiskCylinder;
 	Disk bottomDiskSurface;
 
+	// height adjustment in inches
+	float heightAdjust;
 };
 
 /*

@@ -10,13 +10,14 @@ Scene::Scene() :
 	grid(vec3(0.6f, 0.8f, 0.6f), vec3(0.6f, 0.8f, 0.6f), vec3(0.4f, 0.8f, 0.4f), 15.0f),
 	sDisk(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 1.0f, 1.0f), 40.0f),
 	torus(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 1.0f, 1.0f), 40.0f),
-	stoolModel(vec3(0.3f, 0.2f, 0.2f)),
+	stoolModel(vec3(0.2f, 0.1f, 0.1f), vec3(0.3f, 0.2f, 0.2f), vec3(1.0f, 0.8f, 0.8f)),
 	tableModel(vec3(0.6f, 0.4f, 0.4f)),
 	vaseModel(vec3(1.0f, 1.0f, 1.0f), 14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10),
 	fountain(10000),
 	triangle()
 {
-	lightPos = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	// light position in world space
+	lightPos = vec4(0.0f, 2.0f, -5.0f, 1.0f);
 	lightDiffuse = vec3(0.4f, 0.4f, 0.4f);
 	lightAmbient = vec3(0.2f, 0.2f, 0.2f);
 	lightSpecular = vec3(0.4f, 0.4f, 0.4f);
@@ -86,14 +87,14 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	mvs.push();
 
 	mvs.active = scale(mvs.active, vec3(WORLD_UNITS_PER_METER, WORLD_UNITS_PER_METER, WORLD_UNITS_PER_METER));
-	//mvs.push();
+	mvs.push();
 	//mvs.active = rotate(mvs.active, 20 * time, vec3(1.0f, 0.0f, 0.0f));
-	//vec4 eyeLightPos = mvs.active * lightPos;
-	//mvs.pop();
+	vec4 eyeLightPos = mvs.active * lightPos;
+	mvs.pop();
 	//mvs.active = rotate(mvs.active, 10 * time, vec3(0.0f, 1.0f, 0.0f));
 
 	// push the light properties to the shader
-	shader.setUniform("lightPosition", lightPos);
+	shader.setUniform("lightPosition", eyeLightPos);
 	shader.setUniform("Ld", lightDiffuse);
 	shader.setUniform("La", lightAmbient);
 	shader.setUniform("Ls", lightSpecular);
@@ -162,6 +163,10 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 void Scene::moveLight(float x, float z) {
 	lightPos.z += z;
 	lightPos.x += x;
+}
+
+void Scene::adjustStoolHeight(float amount) {
+	stoolModel.adjustHeight(amount);
 }
 
 

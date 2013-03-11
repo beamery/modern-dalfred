@@ -117,6 +117,12 @@ void KeyboardFunc(unsigned char c, int x, int y) {
 		return;
 
 	switch (c) {
+	case 'j':
+		scene.adjustStoolHeight(-0.2f);
+		break;
+	case 'k':
+		scene.adjustStoolHeight(0.2f);
+		break;
 	case 'i':
 		window.fov--;
 		break;

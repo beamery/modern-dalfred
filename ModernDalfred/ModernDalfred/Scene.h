@@ -40,6 +40,7 @@ public:
 	void update(float elapsedTime);
 	bool draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, const ivec2 &size, const float time);
 	void moveLight(float x, float z);
+	void adjustStoolHeight(float amount);
 	void setFountainShader(ParticleShader *shader);
 	void setTextureShader(Shader *shader);
 
