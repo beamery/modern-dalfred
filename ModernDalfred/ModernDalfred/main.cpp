@@ -16,6 +16,7 @@
 #include "Mesh.h"
 #include "MatrixStack.h"
 #include "Utils.h"
+#include "TextureManager.h"
 
 #define NUM_VIEWS 7
 
@@ -252,6 +253,17 @@ void initShaders() {
 
 }
 
+void initTextures() {
+	TextureManager *textureManager = new TextureManager(true);	
+	TextureManager::get()->loadTexture("logo_sprite.png", "spriteTexture");
+
+	Shader *textureShader = new Shader();
+	textureShader->init("texture.vert", "texture.frag");
+	textureShader->getTextureLocation("spriteTexture");
+	scene.setTextureShader(textureShader);
+}
+
+
 void initScene() {
 	scene.init();
 
@@ -302,6 +314,7 @@ int main(int argc, char * argv[]) {
 		return 0;
 	}
 	initShaders();
+	initTextures();
 	initScene();
 	setViewStrings();
 

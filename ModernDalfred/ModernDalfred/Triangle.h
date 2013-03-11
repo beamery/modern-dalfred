@@ -11,6 +11,8 @@
 #include "VertexData.h"
 #include "Utils.h"
 #include "Shader.h"
+#include "MatrixStack.h"
+#include "TextureManager.h"
 
 using namespace std;
 using namespace glm;
@@ -19,10 +21,11 @@ class Triangle {
 public:
 	Triangle();
 	bool init();
-	bool draw(Shader &shader, mat4 &mv, const mat4 &proj, const ivec2 &size, const float time);
+	bool draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, const ivec2 &size, const float time);
 	void takeDown();
 
 private:
+	Shader texShader;
 	GLuint vertexArrayHandle;
 	GLuint vertexBufferHandle;
 	vector<VertexData> vertices;

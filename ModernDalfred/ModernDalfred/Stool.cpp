@@ -2,18 +2,18 @@
 
 // construct objects
 StoolModel::StoolModel(vec3 color) : color(color), 
-	seatSurface(color, color, color, 15.0f), 
-	seatSide(color, color, color, 15.0f),
-	largeSkewedDisk(color, color, color, 15.0f),
-	smallSkewedDisk(color, color, color, 15.0f),
-	stemCylinder(color, color, color, 15.0f),
-	stemBottom(color, color, color, 15.0f),
-	leg(color, color, color, 15.0f),
-	ring(color, color, color, 15.0f),
-	topDiskCylinder(color, color, color, 15.0f),
-	topDiskSurface(color, color, color, 15.0f),
-	bottomDiskCylinder(color, color, color, 15.0f),
-	bottomDiskSurface(color, color, color, 15.0f)
+	seatSurface(color, color, color, 50.0f), 
+	seatSide(color, color, color, 50.0f),
+	largeSkewedDisk(color, color, color, 50.0f),
+	smallSkewedDisk(color, color, color, 50.0f),
+	stemCylinder(color, color, color, 50.0f),
+	stemBottom(color, color, color, 50.0f),
+	leg(color, color, color, 50.0f),
+	ring(color, color, color, 50.0f),
+	topDiskCylinder(color, color, color, 50.0f),
+	topDiskSurface(color, color, color, 50.0f),
+	bottomDiskCylinder(color, color, color, 50.0f),
+	bottomDiskSurface(color, color, color, 50.0f)
 {}
 
 // initialize object meshes

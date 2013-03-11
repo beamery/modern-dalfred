@@ -1,7 +1,7 @@
 #ifndef PARTICLE_FOUNTAIN_H
 #define PARTICLE_FOUNTAIN_H
 
-#define PARTICLE_LIFETIME 5.0f
+#define PARTICLE_LIFETIME 4.0f
 
 #include <iostream>
 #include <vector>

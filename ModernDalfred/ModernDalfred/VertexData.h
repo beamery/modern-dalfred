@@ -3,18 +3,21 @@
 
 #include <glm/glm.hpp>
 
+using namespace glm;
+
 /*
  * Holds the data for one vertex
  */
 class VertexData {
 public:
 
-	VertexData(glm::vec3 &p, glm::vec3 &c, glm::vec3 &n);
+	VertexData(vec3 &p, vec3 &c, vec3 &n, vec2&t = vec2(0,0));
 	
-	glm::vec3 position;
-	glm::vec3 color;
-	glm::vec3 normal;
-	glm::vec3 flatNormal;
+	vec3 position;
+	vec3 color;
+	vec3 normal;
+	vec3 flatNormal;
+	vec2 texture;
 
 };
 

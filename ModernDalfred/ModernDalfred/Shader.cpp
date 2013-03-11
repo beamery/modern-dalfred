@@ -206,6 +206,26 @@ GLuint Shader::getUniformLocation(const char *name) {
 }
 
 /*
+ * Get the uniform location for the specified texture
+ */
+GLuint Shader::getTextureLocation(const char *name) {
+
+	Utils::GLReturnedError("Shader::getTextureLocation - on entry");
+
+	glUseProgram(this->program_id);
+
+	GLuint handle = glGetUniformLocation(program_id, name);
+
+	this->uniforms[name] = handle;
+
+	glUseProgram(0);
+
+	Utils::GLReturnedError("Shader::getTextureLocation - on exit");
+
+	return handle;
+}
+
+/*
  * Get a subroutine location for this named uniform. Also stores the handle
  * in a map, accessible by the uniform name. Handles using and un-using
  * the shader program internally
@@ -224,6 +244,17 @@ GLuint Shader::getSubroutineLocation(GLenum shaderType, const char *name) {
 	Utils::GLReturnedError("Shader::getSubroutineLocation - on exit");
 
 	return handle;
+}
+
+void Shader::setTexture(const char *name, int slot) {
+	// check for GL errors
+	Utils::GLReturnedError("Shader::setSubroutine - on entry");
+
+	glUniform1i(uniforms[name], slot);
+
+	// check for GL errors
+	Utils::GLReturnedError("Shader::setSubroutine - on exit");
+	
 }
 
 void Shader::setSubroutine(GLenum shaderType, const char *name) {

@@ -13,7 +13,8 @@ Scene::Scene() :
 	stoolModel(vec3(0.3f, 0.2f, 0.2f)),
 	tableModel(vec3(0.6f, 0.4f, 0.4f)),
 	vaseModel(vec3(1.0f, 1.0f, 1.0f), 14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10),
-	fountain(50000)
+	fountain(10000),
+	triangle()
 {
 	lightPos = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	lightDiffuse = vec3(0.4f, 0.4f, 0.4f);
@@ -62,6 +63,9 @@ bool Scene::init() {
 	success = fountain.initGL();
 	if (!success) return false;
 
+	success = triangle.init(); 
+	if (!success) return false;
+
 	return true;
 }
 
@@ -96,6 +100,8 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 
 	// draw the grid in meters
 	grid.draw(shader, mvs.active, proj);
+
+	triangle.draw(*textureShader, mvs, proj, size, time);
 
 	// draw fountain - DEBUGGING
 	//fountain.draw(*fountainShader, mvs, proj, time);
@@ -161,4 +167,8 @@ void Scene::moveLight(float x, float z) {
 
 void Scene::setFountainShader(ParticleShader *shader) {
 	fountainShader = shader;	
+}
+
+void Scene::setTextureShader(Shader *shader) {
+	textureShader = shader;	
 }

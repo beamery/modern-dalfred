@@ -40,7 +40,9 @@ public:
 	std::stringstream getShaderLog(GLuint shader_id);
 
 	GLuint getUniformLocation(const char *name);
+	GLuint getTextureLocation(const char *name);
 	GLuint getSubroutineLocation(GLenum shaderType, const char *name);
+	void setTexture(const char *name, int slot);
 	void setSubroutine(GLenum shaderType, const char *name);
 	void setUniform(const char *name, const vec2 &v);
 	void setUniform(const char *name, const ivec2 &v);

@@ -17,6 +17,7 @@
 #include "Shader.h"
 #include "ParticleShader.h"
 #include "Mesh.h"
+#include "Triangle.h"
 #include "Grid.h"
 #include "Cube.h"
 #include "Cylinder.h"
@@ -40,6 +41,7 @@ public:
 	bool draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, const ivec2 &size, const float time);
 	void moveLight(float x, float z);
 	void setFountainShader(ParticleShader *shader);
+	void setTextureShader(Shader *shader);
 
 private:
 	StoolModel stoolModel;
@@ -55,6 +57,9 @@ private:
 	Cube cube;
 	Cylinder sDisk;
 	Torus torus;
+
+	Triangle triangle;
+	Shader *textureShader;
 
 	vec4 lightPos;
 	vec3 lightDiffuse;

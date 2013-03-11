@@ -52,13 +52,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)/lib/freeglut/include;$(SolutionDir)/lib/glm;$(SolutionDir)/lib/glew/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/lib/freeglut/include;$(SolutionDir)/lib/glm;$(SolutionDir)/lib/glew/include;$(SolutionDir)/lib/sfml/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)/lib/freeglut/lib/x86;$(SolutionDir)/lib/glew/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/lib/freeglut/lib/x86;$(SolutionDir)/lib/glew/lib;$(SolutionDir)/lib/sfml/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;freeglut.lib;sfml-graphics-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -70,15 +70,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)/lib/freeglut/include;$(SolutionDir)/lib/glm;$(SolutionDir)/lib/glew/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)/lib/freeglut/include;$(SolutionDir)/lib/glm;$(SolutionDir)/lib/glew/include;$(SolutionDir)/lib/sfml/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)/lib/freeglut/lib/x86;$(SolutionDir)/lib/glew/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glew32.lib;freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)/lib/freeglut/lib/x86;$(SolutionDir)/lib/glew/lib;$(SolutionDir)/lib/sfml/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32.lib;freeglut.lib;sfml-graphics.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -96,6 +96,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Stool.cpp" />
     <ClCompile Include="Table.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Torus.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Utils.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Stool.h" />
     <ClInclude Include="Table.h" />
+    <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Torus.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Utils.h" />
@@ -124,8 +126,6 @@
     <ClInclude Include="VertexData.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="colored_shader.frag" />
-    <None Include="colored_shader.vert" />
     <None Include="flat.frag" />
     <None Include="flat.vert" />
     <None Include="fountain.frag" />
@@ -133,12 +133,12 @@
     <None Include="gouraud.frag" />
     <None Include="gouraud.vert" />
     <None Include="NOTES.md" />
-    <None Include="pattern.frag" />
-    <None Include="pattern.vert" />
     <None Include="phong.frag" />
     <None Include="phong.vert" />
     <None Include="README.md" />
     <None Include="SOURCES.md" />
+    <None Include="texture.frag" />
+    <None Include="texture.vert" />
     <None Include="wavy.frag" />
     <None Include="wavy.vert" />
   </ItemGroup>
