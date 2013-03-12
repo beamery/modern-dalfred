@@ -1,7 +1,7 @@
 #ifndef PARTICLE_FIRE_H
 #define PARTICLE_FIRE_H
 
-#define FIRE_PARTICLE_LIFETIME 3.0f
+#define FIRE_PARTICLE_LIFETIME 1.5f
 
 #include <iostream>
 #include <vector>

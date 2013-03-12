@@ -14,7 +14,7 @@ Scene::Scene() :
 	tableModel(vec3(0.6f, 0.4f, 0.4f)),
 	vaseModel(vec3(1.0f, 1.0f, 1.0f), 14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10),
 	fountain(10000),
-	fire(5000),
+	fire(3000),
 	triangle()
 {
 	// light position in world space
@@ -106,7 +106,6 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	// draw the grid in meters
 	grid.draw(shader, mvs.active, proj);
 
-	fire.draw(*fountainShader, mvs, proj, time);
 
 	//triangle.draw(*textureShader, mvs, proj, size, time);
 
@@ -130,23 +129,28 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	//sDisk.draw(shader, mvs.active, proj);
 
 
+	// draw fire
+	mvs.push();
+	mvs.active = translate(mvs.active, vec3(0.0f, 0.0f, -3.0f));
+	fire.draw(*fountainShader, mvs, proj, time);
+	mvs.pop();
 
 	// scale stools down to inches
 	mvs.active = scale(mvs.active, vec3(METERS_PER_INCH, METERS_PER_INCH, METERS_PER_INCH));
 
 	// draw stools
 	for (auto i = stools.begin(); i != stools.end(); i++) {
-		//success = i->draw(shader, mvs, proj);
+		success = i->draw(shader, mvs, proj);
 		if (!success) return false;
 	}
 
 	// draw table
-	//success = tableModel.draw(shader, mvs, proj);
+	success = tableModel.draw(shader, mvs, proj);
 	if (!success) return false;
 
 	// draw vase
 	mvs.active = translate(mvs.active, vec3(0.0f, TABLE_HEIGHT, 0.0f));
-	//success = vaseModel.draw(shader, mvs, proj);	
+	success = vaseModel.draw(shader, mvs, proj);	
 	if (!success) return false;
 
 	// scale back up to meters and draw particle fountain
