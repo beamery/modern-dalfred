@@ -17,9 +17,9 @@ out vec3 velocity;
 out float startTime;
 out float transparency;
 
-uniform float time; // total time elapsed
-uniform float elapsedTime; // time elapsed since last frame
-uniform vec3 gravity = vec3(0.0, -0.5, 0.0); // world coords
+uniform float time;             // total time elapsed
+uniform float elapsedTime;      // time elapsed since last frame
+uniform vec3 gravity;           // world coords
 uniform float particleLifetime; // max particle particleLifetime
 
 uniform mat4 mvp;
@@ -27,7 +27,6 @@ uniform mat4 mvp;
 subroutine(renderPassType)
 void update() {
 
-    // Assume initial position is (0,0,0)
     position = vertexPosition;
     velocity = vertexVelocity;
     startTime = vertexStartTime;
@@ -38,7 +37,8 @@ void update() {
 
         // if particle has lived its full life, recycle it
         if (age > particleLifetime) {
-            position = vec3(0.0);
+            //position = vec3(0.0);
+            position.y = 0.0;
             velocity = vertexInitVel;
             startTime = time;
         }

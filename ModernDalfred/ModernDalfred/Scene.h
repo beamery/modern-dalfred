@@ -26,6 +26,7 @@
 #include "Table.h"
 #include "Vase.h"
 #include "ParticleFountain.h"
+#include "ParticleFire.h"
 
 
 using namespace std;
@@ -53,6 +54,8 @@ private:
 
 	ParticleFountain fountain;
 	ParticleShader *fountainShader;
+
+	ParticleFire fire;
 
 	Grid grid;
 	Cube cube;

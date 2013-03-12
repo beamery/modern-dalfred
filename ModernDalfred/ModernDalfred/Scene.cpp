@@ -14,10 +14,11 @@ Scene::Scene() :
 	tableModel(vec3(0.6f, 0.4f, 0.4f)),
 	vaseModel(vec3(1.0f, 1.0f, 1.0f), 14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10),
 	fountain(10000),
+	fire(5000),
 	triangle()
 {
 	// light position in world space
-	lightPos = vec4(0.0f, 2.0f, -5.0f, 1.0f);
+	lightPos = vec4(0.0f, 2.0f, 5.0f, 1.0f);
 	lightDiffuse = vec3(0.4f, 0.4f, 0.4f);
 	lightAmbient = vec3(0.2f, 0.2f, 0.2f);
 	lightSpecular = vec3(0.4f, 0.4f, 0.4f);
@@ -64,6 +65,9 @@ bool Scene::init() {
 	success = fountain.initGL();
 	if (!success) return false;
 
+	success = fire.initGL();
+	if (!success) return false;
+
 	success = triangle.init(); 
 	if (!success) return false;
 
@@ -102,7 +106,9 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	// draw the grid in meters
 	grid.draw(shader, mvs.active, proj);
 
-	triangle.draw(*textureShader, mvs, proj, size, time);
+	fire.draw(*fountainShader, mvs, proj, time);
+
+	//triangle.draw(*textureShader, mvs, proj, size, time);
 
 	// draw fountain - DEBUGGING
 	//fountain.draw(*fountainShader, mvs, proj, time);
@@ -124,33 +130,29 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	//sDisk.draw(shader, mvs.active, proj);
 
 
-	// draw particle fountain
-	mvs.push();
-	mvs.active = translate(mvs.active, vec3(0.0f, 0.0f, 0.0f));
-	mvs.pop();
 
 	// scale stools down to inches
 	mvs.active = scale(mvs.active, vec3(METERS_PER_INCH, METERS_PER_INCH, METERS_PER_INCH));
 
 	// draw stools
 	for (auto i = stools.begin(); i != stools.end(); i++) {
-		success = i->draw(shader, mvs, proj);
+		//success = i->draw(shader, mvs, proj);
 		if (!success) return false;
 	}
 
 	// draw table
-	success = tableModel.draw(shader, mvs, proj);
+	//success = tableModel.draw(shader, mvs, proj);
 	if (!success) return false;
 
 	// draw vase
 	mvs.active = translate(mvs.active, vec3(0.0f, TABLE_HEIGHT, 0.0f));
-	success = vaseModel.draw(shader, mvs, proj);	
+	//success = vaseModel.draw(shader, mvs, proj);	
 	if (!success) return false;
 
-	// scale back up to meters
-	mvs.active = translate(mvs.active, vec3(0.0f, 12.0f, 0.0f));
+	// scale back up to meters and draw particle fountain
+	mvs.active = translate(mvs.active, vec3(0.0f, 15.0f, 0.0f));
 	mvs.active = scale(mvs.active, vec3(1 / METERS_PER_INCH, 1 / METERS_PER_INCH, 1 / METERS_PER_INCH));
-	success = fountain.draw(*fountainShader, mvs, proj, time);
+	//success = fountain.draw(*fountainShader, mvs, proj, time);
 	if (!success) return false;
 
 	mvs.pop();

@@ -90,6 +90,8 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ParticleData.cpp" />
+    <ClCompile Include="ParticleEmitter.cpp" />
+    <ClCompile Include="ParticleFire.cpp" />
     <ClCompile Include="ParticleFountain.cpp" />
     <ClCompile Include="ParticleShader.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -112,6 +114,8 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleData.h" />
+    <ClInclude Include="ParticleEmitter.h" />
+    <ClInclude Include="ParticleFire.h" />
     <ClInclude Include="ParticleFountain.h" />
     <ClInclude Include="ParticleShader.h" />
     <ClInclude Include="Scene.h" />

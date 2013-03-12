@@ -1,39 +1,21 @@
-#include "ParticleFountain.h"
+#include "ParticleEmitter.h"
 
-ParticleFountain::ParticleFountain(int numParticles) : 
-	ParticleEmitter(numParticles, 5.0f, FOUNTAIN_PARTICLE_LIFETIME, "water_droplet", vec3(0.0f, -0.5f, 0.0f)) {
-	
-	vec3 vel(0.0f);
-	float velocity, theta, phi;
-	float time = 0.0f, rate = 0.00050f;
-	for (int i = 0; i < numParticles; i++) {
+ParticleEmitter::ParticleEmitter(int numParticles, 
+								 float particleSize, 
+								 float lifetime, 
+								 const char *texture, 
+								 vec3 acceleration) : 
 
-		// get the direction of the initial velocity
-		theta = mix(0.0f, PI / 6.0f, float(rand()) / RAND_MAX);
-		phi = mix(0.0f, 2.0f * PI, float(rand()) / RAND_MAX);
-		vel.x = sinf(theta) * cosf(phi);
-		vel.y = cosf(theta);
-		vel.z = sinf(theta) * sinf(phi);
+	drawBuf(1), 
+	particleLifetime(lifetime), 
+	particleSize(particleSize), 
+	texture(texture), 
+	acceleration(acceleration) {}
 
-		// scale to get the magnitude of the initial velocity
-		velocity = mix(1.25f, 1.5f, float(rand() / RAND_MAX));
-		vel = vel * velocity;
-
-		// push back the particle with the given velocity and start time
-//		particles.push_back(ParticleData(vel, time));
-		positions.push_back(vec3(0,0,0));
-		velocities.push_back(vel);
-		startTimes.push_back(time);
-		time += rate;
-	}
-
-}
-
-/* MOVED to ParticleEmitter.cpp
 
 // initialize OpenGL buffers for this particle fountain
-bool ParticleFountain::initGL() {
-	if (Utils::GLReturnedError("ParticleFountain::initGL - on entry")) return false;
+bool ParticleEmitter::initGL() {
+	if (Utils::GLReturnedError("ParticleEmitter::initGL - on entry")) return false;
 
 	// generate handles for whole bundle
 	glGenVertexArrays(2, particleArray);
@@ -92,7 +74,7 @@ bool ParticleFountain::initGL() {
 	}
 
 	
-	//*
+	/*
 	glGenVertexArrays(1, &vertexArrayHandle);
 	glBindVertexArray(vertexArrayHandle);
 	glGenBuffers(1, &vertexBufferHandle);
@@ -105,30 +87,25 @@ bool ParticleFountain::initGL() {
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	//*
+	*/
 
-	if (Utils::GLReturnedError("ParticleFountain::initGL - on exit")) return false;
+	if (Utils::GLReturnedError("ParticleEmitter::initGL - on exit")) return false;
 
 	return true;
 }
-*/
 
 
-void ParticleFountain::update(float elapsedTime) {
+void ParticleEmitter::update(float elapsedTime) {
 
 }
 
-/* MOVED to ParticleEmitter.cpp
-
-bool ParticleFountain::draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj, float time) {
-	if (Utils::GLReturnedError("ParticleFountain::draw - on entry")) return false;
-
+bool ParticleEmitter::draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj, float time) {
 	shader.use();
 	// set up fountain drawing
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glPointSize(5.0f);
+	glPointSize(particleSize);
 
 
 	// set up subroutine call
@@ -137,10 +114,11 @@ bool ParticleFountain::draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj,
 	// set uniforms
 	mat4 mvp = proj * mvs.active;
 	shader.setUniform("time", time);
-	shader.setUniform("particleLifetime", FOUNTAIN_PARTICLE_LIFETIME);
+	shader.setUniform("particleLifetime", particleLifetime);
+	shader.setUniform("gravity", acceleration);
 	shader.setUniform("mvp", mvp);
 	shader.setTexture("spriteTexture", 0);
-	TextureManager::get()->useTexture("water_droplet");
+	TextureManager::get()->useTexture(texture);
 
 	////////// Update pass //////////
 	{
@@ -196,7 +174,7 @@ bool ParticleFountain::draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj,
 	//glBindVertexArray(vertexArrayHandle);
 	//glDrawArrays(GL_POINTS, 0, particles.size());
 	glDrawArrays(GL_POINTS, 0, positions.size());
-	/*
+	*/
 
 	// take down fountain setup
 	glEnable(GL_DEPTH_TEST);
@@ -206,4 +184,3 @@ bool ParticleFountain::draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj,
 	if (Utils::GLReturnedError("ParticleFountain::draw - on exit")) return false;
 	return true;
 }
-*/

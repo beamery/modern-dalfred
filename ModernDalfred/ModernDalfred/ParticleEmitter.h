@@ -1,7 +1,5 @@
-#ifndef PARTICLE_FOUNTAIN_H
-#define PARTICLE_FOUNTAIN_H
-
-#define FOUNTAIN_PARTICLE_LIFETIME 4.0f
+#ifndef PARTICLE_EMITTER_H
+#define PARTICLE_EMITTER_H
 
 #include <iostream>
 #include <vector>
@@ -18,7 +16,6 @@
 #include "ParticleShader.h"
 #include "Constants.h"
 #include "TextureManager.h"
-#include "ParticleEmitter.h"
 
 using namespace glm;
 
@@ -26,22 +23,29 @@ using namespace glm;
  * This class is a test class for a simple particle system. 
  * Much of the code is lifted from the OpenGL 4.0 Shading Language Cookbook
  */
-class ParticleFountain : public ParticleEmitter {
+class ParticleEmitter {
 
 public:
-	ParticleFountain(int numParticles);
+	ParticleEmitter(
+		int numParticles, 
+		float particleSize, 
+		float lifetime, 
+		const char *texture, 
+		vec3 acceleration);
 
-	void update(float elapsedTime);
+	virtual void update(float elapsedTime);
 
-	//bool draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj, float time);
-	//bool initGL();
+	virtual bool draw(ParticleShader &shader, MatrixStack &mvs, mat4 proj, float time);
+	virtual bool initGL();
 
-private:
-	/*
+protected:
 	vector<vec3> positions;
 	vector<vec3> velocities;
 	vector<GLfloat> startTimes;
 
+	float particleLifetime, particleSize;
+	const char *texture;
+	vec3 acceleration; // how much the particles accelerate per second
 	//vector<ParticleData> particles;
 
 	GLuint particleArray[2];
@@ -54,7 +58,6 @@ private:
 
 	GLuint vertexArrayHandle;
 	GLuint vertexBufferHandle;
-	*/
 };
 
 

@@ -262,6 +262,8 @@ void initShaders() {
 void initTextures() {
 	TextureManager *textureManager = new TextureManager(true);	
 	TextureManager::get()->loadTexture("logo_sprite.png", "spriteTexture");
+	TextureManager::get()->loadTexture("water_droplet.png", "water_droplet");
+	TextureManager::get()->loadTexture("fire.png", "fire");
 
 	Shader *textureShader = new Shader();
 	textureShader->init("texture.vert", "texture.frag");
@@ -277,8 +279,10 @@ void initScene() {
 	fountainShader->init("fountain.vert", "fountain.frag");
 	fountainShader->getUniformLocation("particleLifetime");
 	fountainShader->getUniformLocation("elapsedTime");
+	fountainShader->getUniformLocation("gravity");
 	fountainShader->getSubroutineLocation(GL_VERTEX_SHADER, "update");
 	fountainShader->getSubroutineLocation(GL_VERTEX_SHADER, "render");
+	fountainShader->getTextureLocation("spriteTexture");
 	scene.setFountainShader(fountainShader);
 }
 
