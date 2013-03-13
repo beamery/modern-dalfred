@@ -51,7 +51,7 @@ bool Scene::init() {
 	success = vaseModel.initMesh();
 	if (!success) return false;
 
-	success = grid.init(GRID_SIZE);
+	success = grid.init(GRID_SIZE, GRID_SIZE);
 	if (!success) return false;
 
 	success = cube.init();
@@ -140,7 +140,7 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	mvs.pop();
 
 	// draw fireplace
-	fireplace.draw(shader, mvs, proj, time);
+	fireplace.draw(*textureShader, mvs, proj, time);
 
 	// scale stools down to inches
 	mvs.active = scale(mvs.active, vec3(METERS_PER_INCH, METERS_PER_INCH, METERS_PER_INCH));

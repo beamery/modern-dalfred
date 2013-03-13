@@ -14,6 +14,7 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include "Object.h"
+#include "TextureManager.h"
 
 using namespace std;
 using namespace glm;
@@ -21,7 +22,7 @@ using namespace glm;
 class Cube : Object {
 
 public:
-	Cube(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine);
+	Cube(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine, const char *texture = NULL);
 	bool init();
 	virtual bool draw(Shader &shader, mat4 &mv, const mat4 &proj);
 
@@ -32,6 +33,7 @@ private:
 	//vector<VertexData> vertices;
 
 	vec3 color;
+	const char *texture;
 	//vec3 materialDiffuse;
 	//vec3 materialAmbient;
 };

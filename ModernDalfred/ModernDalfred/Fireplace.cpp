@@ -2,7 +2,7 @@
 
 Fireplace::Fireplace(vec3 pos, vec3 ambient, vec3 diff, vec3 spec) : 
 	position(pos),
-	cube(ambient, diff, spec, 1.0f),
+	cube(ambient, diff, spec, 1.0f, "brick"),
 	fire(3000)
 {}
 
@@ -30,17 +30,29 @@ bool Fireplace::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, float t
 	if (!success) return false;
 
 	// draw top of fireplace
-	mvs.push();
-	mvs.active = translate(mvs.active, vec3(0.0f, FP_SIDE_HEIGHT + FP_BLOCK_THICKNESS / 2, 0.0f));
-	mvs.active = scale(mvs.active, vec3(FP_WIDTH, FP_BLOCK_THICKNESS, FP_BLOCK_THICKNESS));
-	cube.draw(shader, mvs.active, proj);
-	mvs.pop();
+	for (int i = 0; i < 6; i++) {
+		mvs.push();
+		mvs.active = translate(mvs.active, vec3(FP_BLOCK_THICKNESS * i, 0.0f, 0.0f));
+		mvs.active = translate(mvs.active, 
+			vec3(-(FP_WIDTH / 2 - FP_BLOCK_THICKNESS / 2), 3.5 * FP_BLOCK_THICKNESS, 0.0f));
+		mvs.active = scale(mvs.active, vec3(FP_BLOCK_THICKNESS, FP_BLOCK_THICKNESS, FP_BLOCK_THICKNESS));
+		cube.draw(shader, mvs.active, proj);
+		mvs.pop();
+	}
+
 
 	// draw chimney
-	mvs.active = translate(mvs.active, 
-		vec3(0.0f, FP_SIDE_HEIGHT + FP_BLOCK_THICKNESS + FP_CHIMNEY_HEIGHT / 2, -FP_BLOCK_THICKNESS / 4));
-	mvs.active = scale(mvs.active, vec3(FP_CHIMNEY_WIDTH, FP_CHIMNEY_HEIGHT, FP_BLOCK_THICKNESS / 2));
-	cube.draw(shader, mvs.active, proj);
+	for (int i = 0; i < 8; i++) {
+		mvs.push();
+		mvs.active = translate(mvs.active, vec3(0.0f, FP_BLOCK_THICKNESS * i, 0.0f));
+		mvs.active = translate(mvs.active, 
+			vec3(0.0f, FP_BLOCK_THICKNESS * 4.5, -FP_BLOCK_THICKNESS / 4));
+		mvs.active = scale(mvs.active, vec3(FP_CHIMNEY_WIDTH, FP_BLOCK_THICKNESS, FP_BLOCK_THICKNESS / 2));
+		cube.draw(shader, mvs.active, proj);
+		mvs.pop();
+
+	}
+
 
 	mvs.pop();
 	return true;
@@ -52,10 +64,17 @@ bool Fireplace::drawSide(Shader &shader, MatrixStack &mvs, const mat4 &proj, flo
 	mvs.active = translate(mvs.active, vec3(xOffset, 0.0f, 0.0f));
 
 	// place the bottom of the side at 0 in the y direction
-	mvs.active = translate(mvs.active, vec3(0.0f, 18.0f, 0.0f));
-	mvs.active = scale(mvs.active, vec3(FP_BLOCK_THICKNESS, FP_SIDE_HEIGHT, FP_BLOCK_THICKNESS));
-	bool success = cube.draw(shader, mvs.active, proj);
-	if (!success) return false;
+	for (int i = 0; i < 3; i++) {
+		mvs.push();
+		mvs.active = translate(mvs.active, vec3(0.0f, FP_BLOCK_THICKNESS / 2, 0.0f));
+		mvs.active = translate(mvs.active, vec3(0.0f, FP_BLOCK_THICKNESS * i, 0.0f));
+		mvs.active = scale(mvs.active, vec3(FP_BLOCK_THICKNESS, FP_BLOCK_THICKNESS, FP_BLOCK_THICKNESS));
+		bool success = cube.draw(shader, mvs.active, proj);
+		if (!success) return false;
+		mvs.pop();
+	}
+
+
 
 	mvs.pop();
 	return true;

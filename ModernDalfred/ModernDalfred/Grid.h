@@ -22,7 +22,7 @@ class Grid {
 
 public:
 	Grid(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine);
-	bool init(int size);
+	bool init(int sizeX, int sizeZ);
 
 	bool draw(Shader &shader,  mat4 &mv, const mat4 &proj);
 

@@ -261,7 +261,7 @@ void initShaders() {
 
 void initTextures() {
 	TextureManager *textureManager = new TextureManager(true);	
-	TextureManager::get()->loadTexture("logo_sprite.png", "spriteTexture");
+	TextureManager::get()->loadTexture("brick.png", "brick");
 	TextureManager::get()->loadTexture("water_droplet.png", "water_droplet");
 	TextureManager::get()->loadTexture("fire.png", "fire");
 

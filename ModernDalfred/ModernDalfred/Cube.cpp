@@ -1,7 +1,9 @@
 #include "Cube.h"
 
-Cube::Cube(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine) : 
-	Object(matAmbient, matDiffuse, matSpecular, shine) {}
+Cube::Cube(vec3 matAmbient, vec3 matDiffuse, vec3 matSpecular, float shine, const char *texture) : 
+	Object(matAmbient, matDiffuse, matSpecular, shine),
+	texture(texture)
+{}
 
 bool Cube::init() {
 	// first, check for entry errors
@@ -24,12 +26,14 @@ bool Cube::init() {
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*) sizeof(vec3));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*) (2 * sizeof(vec3)));
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*) (3 * sizeof(vec3)));
+	glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, sizeof(VertexData), (GLvoid*) (4 * sizeof(vec3)));
 
 	// enable vertex attributes
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
 
 	// unbind vertex and buffer handles
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -44,52 +48,52 @@ bool Cube::init() {
 
 void Cube::initVertices() {
 	// front face
-	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, 0.5f), color, vec3(0, 0, 1.0f)));
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(0, 0, 1.0f)));
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, 0.5f), color, vec3(0, 0, 1.0f)));
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(0, 0, 1.0f)));
-	vertices.push_back(VertexData(vec3(0.5f, 0.5f, 0.5f), color, vec3(0, 0, 1.0f)));
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, 0.5f), color, vec3(0, 0, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, 0.5f), color, vec3(0, 0, 1.0f), vec2(0.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(0, 0, 1.0f), vec2(1.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, 0.5f), color, vec3(0, 0, 1.0f), vec2(0.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(0, 0, 1.0f), vec2(1.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, 0.5f, 0.5f), color, vec3(0, 0, 1.0f), vec2(1.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, 0.5f), color, vec3(0, 0, 1.0f), vec2(0.0f, 0.0f)));
 
 	// back face
-	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, -0.5f), color, vec3(0, 0, -1.0f)));
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(0, 0, -1.0f)));
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, -0.5f), color, vec3(0, 0, -1.0f)));
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, -0.5f), color, vec3(0, 0, -1.0f)));
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(0, 0, -1.0f)));
-	vertices.push_back(VertexData(vec3(0.5f, 0.5f, -0.5f), color, vec3(0, 0, -1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, -0.5f), color, vec3(0, 0, -1.0f), vec2(1.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(0, 0, -1.0f), vec2(1.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, -0.5f), color, vec3(0, 0, -1.0f), vec2(0.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, -0.5f), color, vec3(0, 0, -1.0f), vec2(0.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(0, 0, -1.0f), vec2(1.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, 0.5f, -0.5f), color, vec3(0, 0, -1.0f), vec2(0.0f, 0.0f)));
 
 	// top face
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, 0.5f), color, vec3(0, 1.0f, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, 0.5f, 0.5f), color, vec3(0, 1.0f, 0)));
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(0, 1.0f, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, 0.5f, 0.5f), color, vec3(0, 1.0f, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, 0.5f, -0.5f), color, vec3(0, 1.0f, 0)));
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(0, 1.0f, 0)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, 0.5f), color, vec3(0, 1.0f, 0), vec2(0.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, 0.5f, 0.5f), color, vec3(0, 1.0f, 0), vec2(1.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(0, 1.0f, 0), vec2(0.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, 0.5f, 0.5f), color, vec3(0, 1.0f, 0), vec2(1.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, 0.5f, -0.5f), color, vec3(0, 1.0f, 0), vec2(1.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(0, 1.0f, 0), vec2(0.0f, 0.0f)));
 
 	// bottom face
-	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, 0.5f), color, vec3(0, -1.0f, 0)));
-	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, -0.5f), color, vec3(0, -1.0f, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(0, -1.0f, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(0, -1.0f, 0)));
-	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, -0.5f), color, vec3(0, -1.0f, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, -0.5f), color, vec3(0, -1.0f, 0)));
+	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, 0.5f), color, vec3(0, -1.0f, 0), vec2(1.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, -0.5f), color, vec3(0, -1.0f, 0), vec2(1.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(0, -1.0f, 0), vec2(0.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(0, -1.0f, 0), vec2(0.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, -0.5f), color, vec3(0, -1.0f, 0), vec2(1.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, -0.5f), color, vec3(0, -1.0f, 0), vec2(0.0f, 0.0f)));
 
 	// right face
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, -0.5f), color, vec3(1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, 0.5f, -0.5f), color, vec3(1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, 0.5f, -0.5f), color, vec3(1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(0.5f, 0.5f, 0.5f), color, vec3(1.0f, 0, 0)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(1.0f, 0, 0), vec2(0.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, -0.5f), color, vec3(1.0f, 0, 0), vec2(1.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, 0.5f, -0.5f), color, vec3(1.0f, 0, 0), vec2(1.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, -0.5f, 0.5f), color, vec3(1.0f, 0, 0), vec2(0.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, 0.5f, -0.5f), color, vec3(1.0f, 0, 0), vec2(1.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(0.5f, 0.5f, 0.5f), color, vec3(1.0f, 0, 0), vec2(0.0f, 0.0f)));
 
 	// left face
-	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, 0.5f), color, vec3(-1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(-1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, -0.5f), color, vec3(-1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, 0.5f), color, vec3(-1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, 0.5f), color, vec3(-1.0f, 0, 0)));
-	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(-1.0f, 0, 0)));
+	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, 0.5f), color, vec3(-1.0f, 0, 0), vec2(1.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(-1.0f, 0, 0), vec2(0.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, -0.5f), color, vec3(-1.0f, 0, 0), vec2(0.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, -0.5f, 0.5f), color, vec3(-1.0f, 0, 0), vec2(1.0f, 1.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, 0.5f), color, vec3(-1.0f, 0, 0), vec2(0.0f, 0.0f)));
+	vertices.push_back(VertexData(vec3(-0.5f, 0.5f, -0.5f), color, vec3(-1.0f, 0, 0), vec2(1.0f, 0.0f)));
 }
 
 bool Cube::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
@@ -105,10 +109,18 @@ bool Cube::draw(Shader &shader, mat4 &mv, const mat4 &proj) {
 	shader.setUniform("projMat", proj);
 	shader.setUniform("normalMat", transpose(inverse(mv)));
 	shader.setUniform("mvp", mvp);
-	shader.setUniform("Kd", materialDiffuse);
-	shader.setUniform("Ka", materialAmbient);
-	shader.setUniform("Ks", materialSpecular);
-	shader.setUniform("shine", shine);
+
+	if (texture != NULL) {
+		shader.setTexture("spriteTexture", 0);
+		TextureManager::get()->useTexture(texture);
+	}
+	else {
+		shader.setUniform("Kd", materialDiffuse);
+		shader.setUniform("Ka", materialAmbient);
+		shader.setUniform("Ks", materialSpecular);
+		shader.setUniform("shine", shine);
+	}
+
 
 	glBindVertexArray(vertexArrayHandle);
 

@@ -6,8 +6,8 @@
 #endif
 
 #define FP_SIDE_HEIGHT 36.0f
-#define FP_BLOCK_THICKNESS 13.0f
-#define FP_WIDTH 76.0f
+#define FP_BLOCK_THICKNESS 12.0f
+#define FP_WIDTH 72.0f
 #define FP_CHIMNEY_HEIGHT 100.0f
 #define FP_CHIMNEY_WIDTH 20.0f
 

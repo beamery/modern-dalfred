@@ -50,13 +50,13 @@ bool Triangle::init() {
 	glVertexAttribPointer(2, 3, GL_FLOAT, FALSE, sizeof(VertexData), (GLvoid*) (2 * sizeof(vec3)));
 	
 	// additional offset due to flat normal
-	glVertexAttribPointer(3, 2, GL_FLOAT, FALSE, sizeof(VertexData), (GLvoid*) (4 * sizeof(vec3)));
+	glVertexAttribPointer(4, 2, GL_FLOAT, FALSE, sizeof(VertexData), (GLvoid*) (4 * sizeof(vec3)));
 
 	// Enable the attributes
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
+	glEnableVertexAttribArray(4);
 
 	// Unbind the buffer and vertex array
 	glBindBuffer(GL_ARRAY_BUFFER, 0);

@@ -119,9 +119,6 @@
     <ClInclude Include="Mesh.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
-    <ClInclude Include="Grid.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
@@ -165,6 +162,9 @@
       <Filter>Header Files\Models</Filter>
     </ClInclude>
     <ClInclude Include="Fireplace.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
   </ItemGroup>
