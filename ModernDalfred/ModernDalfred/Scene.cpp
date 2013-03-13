@@ -8,6 +8,8 @@
 Scene::Scene() : 
 	cube(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(1.0f, 1.0f, 1.0f), 20.0f),
 	grid(vec3(0.6f, 0.8f, 0.6f), vec3(0.6f, 0.8f, 0.6f), vec3(0.4f, 0.8f, 0.4f), 15.0f),
+	wallFar(vec3(0.6f, 0.6f, 0.6f), vec3(0.6f, 0.6f, 0.6f), vec3(0.6f, 0.6f, 0.6f), 10.0f),
+	wallLeft(vec3(0.6f, 0.6f, 0.6f), vec3(0.6f, 0.6f, 0.6f), vec3(0.6f, 0.6f, 0.6f), 10.0f),
 	sDisk(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 1.0f, 1.0f), 40.0f),
 	torus(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 1.0f, 1.0f), 40.0f),
 	stoolModel(vec3(0.2f, 0.1f, 0.1f), vec3(0.3f, 0.2f, 0.2f), vec3(1.0f, 0.8f, 0.8f)),
@@ -15,7 +17,7 @@ Scene::Scene() :
 	vaseModel(vec3(1.0f, 1.0f, 1.0f), 14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10),
 	fountain(10000),
 	fire(3000),
-	fireplace(vec3(0.0f, 0.0f, -3.0f), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f)),
+	fireplace(vec3(0.0f, 0.0f, -WALL_DIST + FP_BLOCK_THICKNESS / 2 * METERS_PER_INCH), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f)),
 	triangle()
 {
 	// light position in world space
@@ -52,6 +54,12 @@ bool Scene::init() {
 	if (!success) return false;
 
 	success = grid.init(GRID_SIZE, GRID_SIZE);
+	if (!success) return false;
+
+	success = wallFar.init(WALL_LENGTH, WALL_HEIGHT);
+	if (!success) return false;
+
+	success = wallLeft.init(WALL_HEIGHT, WALL_LENGTH);
 	if (!success) return false;
 
 	success = cube.init();
@@ -107,9 +115,43 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	shader.setUniform("La", lightAmbient);
 	shader.setUniform("Ls", lightSpecular);
 
+	// push light properties to the texture shader
+	textureShader->use();
+	textureShader->setUniform("lightPosition", eyeLightPos);
+	textureShader->setUniform("Ld", lightDiffuse);
+	textureShader->setUniform("La", lightAmbient);
+	textureShader->setUniform("Ls", lightSpecular);
+
 	// draw the grid in meters
 	grid.draw(shader, mvs.active, proj);
 
+	// transform far wall and draw it
+	mvs.push();
+	mvs.active = translate(mvs.active, vec3(0.0f, 0.0f, -WALL_DIST));
+	mvs.active = translate(mvs.active, vec3(0.0f, WALL_HEIGHT / 2.0f, 0.0f));
+	mvs.active = rotate(mvs.active, 90.0f, vec3(1.0f, 0.0f, 0.0f));
+	wallFar.draw(shader, mvs.active, proj);
+	mvs.pop();
+
+	// draw fireplace
+	fireplace.draw(*textureShader, mvs, proj, time);
+
+	// transform right wall and draw it
+	mvs.push();
+	mvs.active = translate(mvs.active, vec3(WALL_DIST, 0.0f, 0.0f));
+	mvs.active = translate(mvs.active, vec3(0.0f, WALL_HEIGHT / 2.0f, 0.0f));
+	mvs.active = rotate(mvs.active, 90.0f, vec3(0.0f, 0.0f, 1.0f));
+	wallLeft.draw(shader, mvs.active, proj);
+	mvs.pop();
+
+	// transform left wall and draw it
+	mvs.push();
+	mvs.active = rotate(mvs.active, 180.0f, vec3(0.0f, 1.0f, 0.0f));
+	mvs.active = translate(mvs.active, vec3(WALL_DIST, 0.0f, 0.0f));
+	mvs.active = translate(mvs.active, vec3(0.0f, WALL_HEIGHT / 2.0f, 0.0f));
+	mvs.active = rotate(mvs.active, 90.0f, vec3(0.0f, 0.0f, 1.0f));
+	wallLeft.draw(shader, mvs.active, proj);
+	mvs.pop();
 
 	//triangle.draw(*textureShader, mvs, proj, size, time);
 
@@ -131,16 +173,6 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	bool success = true;
 	//cube.draw(shader, mvs.active, proj);
 	//sDisk.draw(shader, mvs.active, proj);
-
-
-	// draw fire
-	mvs.push();
-	mvs.active = translate(mvs.active, vec3(0.0f, 0.0f, -3.0f));
-	//fire.draw(*fountainShader, mvs, proj, time);
-	mvs.pop();
-
-	// draw fireplace
-	fireplace.draw(*textureShader, mvs, proj, time);
 
 	// scale stools down to inches
 	mvs.active = scale(mvs.active, vec3(METERS_PER_INCH, METERS_PER_INCH, METERS_PER_INCH));

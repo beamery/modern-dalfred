@@ -268,6 +268,10 @@ void initTextures() {
 	Shader *textureShader = new Shader();
 	textureShader->init("texture.vert", "texture.frag");
 	textureShader->getTextureLocation("spriteTexture");
+	textureShader->getUniformLocation("lightPosition");
+	textureShader->getUniformLocation("Ld");
+	textureShader->getUniformLocation("La");
+	textureShader->getUniformLocation("Ls");
 	scene.setTextureShader(textureShader);
 }
 

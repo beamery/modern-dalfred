@@ -2,7 +2,12 @@
 #define SCENE_H
 
 #define WORLD_UNITS_PER_METER 1.00f
-#define GRID_SIZE 32
+
+// in meters
+#define GRID_SIZE 16
+#define WALL_DIST 3.3f
+#define WALL_HEIGHT 4
+#define WALL_LENGTH 10
 
 #ifndef METERS_PER_INCH
 #define METERS_PER_INCH 0.0254f
@@ -62,6 +67,8 @@ private:
 	ParticleFire fire;
 	Fireplace fireplace;
 
+	Grid wallFar;
+	Grid wallLeft;
 	Grid grid;
 	Cube cube;
 	Cylinder sDisk;
