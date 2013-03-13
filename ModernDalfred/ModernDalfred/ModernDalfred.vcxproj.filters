@@ -93,6 +93,9 @@
     <ClCompile Include="ParticleFire.cpp">
       <Filter>Source Files\Models</Filter>
     </ClCompile>
+    <ClCompile Include="Fireplace.cpp">
+      <Filter>Source Files\Models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MatrixStack.h">
@@ -159,6 +162,9 @@
       <Filter>Header Files\Models</Filter>
     </ClInclude>
     <ClInclude Include="ParticleFire.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Fireplace.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
   </ItemGroup>

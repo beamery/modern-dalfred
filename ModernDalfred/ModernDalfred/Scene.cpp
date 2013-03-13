@@ -15,6 +15,7 @@ Scene::Scene() :
 	vaseModel(vec3(1.0f, 1.0f, 1.0f), 14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10),
 	fountain(10000),
 	fire(3000),
+	fireplace(vec3(0.0f, 0.0f, -3.0f), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f)),
 	triangle()
 {
 	// light position in world space
@@ -66,6 +67,9 @@ bool Scene::init() {
 	if (!success) return false;
 
 	success = fire.initGL();
+	if (!success) return false;
+
+	success = fireplace.initMesh();
 	if (!success) return false;
 
 	success = triangle.init(); 
@@ -132,8 +136,11 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	// draw fire
 	mvs.push();
 	mvs.active = translate(mvs.active, vec3(0.0f, 0.0f, -3.0f));
-	fire.draw(*fountainShader, mvs, proj, time);
+	//fire.draw(*fountainShader, mvs, proj, time);
 	mvs.pop();
+
+	// draw fireplace
+	fireplace.draw(shader, mvs, proj, time);
 
 	// scale stools down to inches
 	mvs.active = scale(mvs.active, vec3(METERS_PER_INCH, METERS_PER_INCH, METERS_PER_INCH));
@@ -178,6 +185,7 @@ void Scene::adjustStoolHeight(float amount) {
 
 void Scene::setFountainShader(ParticleShader *shader) {
 	fountainShader = shader;	
+	fireplace.setFireShader(shader);
 }
 
 void Scene::setTextureShader(Shader *shader) {

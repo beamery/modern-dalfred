@@ -2,8 +2,11 @@
 #define SCENE_H
 
 #define WORLD_UNITS_PER_METER 1.00f
-#define METERS_PER_INCH 0.0254f
 #define GRID_SIZE 32
+
+#ifndef METERS_PER_INCH
+#define METERS_PER_INCH 0.0254f
+#endif
 
 #include <iostream>
 #include <vector>
@@ -27,6 +30,7 @@
 #include "Vase.h"
 #include "ParticleFountain.h"
 #include "ParticleFire.h"
+#include "Fireplace.h"
 
 
 using namespace std;
@@ -56,6 +60,7 @@ private:
 	ParticleShader *fountainShader;
 
 	ParticleFire fire;
+	Fireplace fireplace;
 
 	Grid grid;
 	Cube cube;
