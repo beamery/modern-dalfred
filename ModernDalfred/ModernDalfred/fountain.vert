@@ -40,7 +40,7 @@ void update() {
             //position = vec3(0.0);
             position.y = 0.0;
             velocity = vertexInitVel;
-            startTime = time;
+            startTime = vertexStartTime + 1.5;
         }
         // update the living particle
         else {

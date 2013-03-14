@@ -1,7 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#define WORLD_UNITS_PER_METER 1.00f
+#define WORLD_UNITS_PER_METER 1.10f
 
 // in meters
 #define GRID_SIZE 11
