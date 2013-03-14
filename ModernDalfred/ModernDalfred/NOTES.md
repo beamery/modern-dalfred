@@ -34,7 +34,6 @@ Environment Ideas
   - Definitely a fireplace
 	- That means figuring out how to make a particle generator
   - Need texturing (I think)
-  - Maybe add point lighting?
 
 - Outdoors
   - Could make a procedurally generated landscape

@@ -42,6 +42,7 @@ struct Options {
 } options;
 
 vector<char*> viewStrings;
+Shader *textureShader;
 
 struct Camera {
 	vec3 position;
@@ -89,6 +90,8 @@ void DisplayFunc() {
 	options.currentShader = shaders[options.shader];
 	options.currentShader->use();
 	options.currentShader->setUniform("view", options.view);
+	textureShader->use();
+	textureShader->setUniform("view", options.view);
 
 	// update the scene with the amount of time since the last frame
 	scene.update(elapsedTime);
@@ -265,13 +268,14 @@ void initTextures() {
 	TextureManager::get()->loadTexture("water_droplet.png", "water_droplet");
 	TextureManager::get()->loadTexture("fire.png", "fire");
 
-	Shader *textureShader = new Shader();
+	textureShader = new Shader();
 	textureShader->init("texture.vert", "texture.frag");
 	textureShader->getTextureLocation("spriteTexture");
 	textureShader->getUniformLocation("lightPosition");
 	textureShader->getUniformLocation("Ld");
 	textureShader->getUniformLocation("La");
 	textureShader->getUniformLocation("Ls");
+	textureShader->getUniformLocation("view");
 	scene.setTextureShader(textureShader);
 }
 
