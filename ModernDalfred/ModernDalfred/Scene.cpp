@@ -7,24 +7,30 @@
  */
 Scene::Scene() : 
 	cube(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(1.0f, 1.0f, 1.0f), 20.0f),
-	grid(vec3(0.6f, 0.8f, 0.6f), vec3(0.6f, 0.8f, 0.6f), vec3(0.4f, 0.8f, 0.4f), 15.0f),
-	wallFar(vec3(0.6f, 0.6f, 0.6f), vec3(0.6f, 0.6f, 0.6f), vec3(0.6f, 0.6f, 0.6f), 10.0f),
-	wallLeft(vec3(0.6f, 0.6f, 0.6f), vec3(0.6f, 0.6f, 0.6f), vec3(0.6f, 0.6f, 0.6f), 10.0f),
+	grid(vec3(0.6f, 0.4f, 0.4f), vec3(0.6f, 0.4f, 0.4f), vec3(0.1f, 0.1f, 0.1f), 15.0f),
+	ceiling(vec3(0.6f, 0.6f, 0.6f), vec3(0.6f, 0.6f, 0.6f), vec3(0.1f, 0.1f, 0.1f), 15.0f),
+	wallFar(vec3(0.3f, 0.4f, 0.3f), vec3(0.5f, 0.6f, 0.5f), vec3(0.05f, 0.05f, 0.05f), 1.0f),
+	wallLeft(vec3(0.3f, 0.4f, 0.3f), vec3(0.5f, 0.6f, 0.5f), vec3(0.05f, 0.05f, 0.05f), 1.0f),
 	sDisk(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 1.0f, 1.0f), 40.0f),
 	torus(vec3(0.0f, 0.8f, 0.8f), vec3(1.0f, 1.0f, 1.0f), vec3(0.0f, 1.0f, 1.0f), 40.0f),
 	stoolModel(vec3(0.2f, 0.1f, 0.1f), vec3(0.3f, 0.2f, 0.2f), vec3(1.0f, 0.8f, 0.8f)),
-	tableModel(vec3(0.6f, 0.4f, 0.4f)),
-	vaseModel(vec3(1.0f, 1.0f, 1.0f), 14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10),
+	tableModel(vec3(0.2f, 0.1f, 0.1f), vec3(0.3f, 0.2f, 0.2f), vec3(1.0f, 0.8f, 0.8f)),
+	vaseModel(vec3(0.4f, 0.5f, 0.4f), vec3(0.7f, 0.8f, 0.7f), vec3(0.3f, 0.3f, 0.3f), 
+			14.0f, 2.5f, 1.0f, 2 * PI / 14.0f, 0.0f, 20, 10),
+	bowl(vec3(0.4f, 0.4f, 0.5f), vec3(0.7f, 0.7f, 0.8f), vec3(0.3f, 0.3f, 0.3f),
+			4.0f, 3.0f, 3.0f, 2 * PI / 14.0f, 0.0f, 20, 10),
+	goblet(vec3(0.5f, 0.4f, 0.4f), vec3(0.8f, 0.7f, 0.7f), vec3(0.3f, 0.3f, 0.3f),
+			6.0f, 1.5f, 1.0f, 2 * PI / 8.0f, 4.0f, 32, 10),
 	fountain(10000),
 	fire(3000),
 	fireplace(vec3(0.0f, 0.0f, -WALL_DIST + FP_BLOCK_THICKNESS / 2 * METERS_PER_INCH), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f)),
 	triangle()
 {
 	// light position in world space
-	lightPos = vec4(0.0f, 2.0f, 5.0f, 1.0f);
-	lightDiffuse = vec3(0.4f, 0.4f, 0.4f);
-	lightAmbient = vec3(0.2f, 0.2f, 0.2f);
-	lightSpecular = vec3(0.4f, 0.4f, 0.4f);
+	lightPos = vec4(0.0f, 0.3f, -WALL_DIST + FP_BLOCK_THICKNESS / 2 * METERS_PER_INCH + 0.2f, 1.0f);
+	lightDiffuse = vec3(0.7f, 0.5f, 0.3f);
+	lightAmbient = vec3(0.3f, 0.3f, 0.3f);
+	lightSpecular = vec3(0.65f, 0.5f, 0.5f);
 
 	// add stools to surround the table
 	stools.push_back(Stool(&stoolModel, vec3(0.0f, 0.0f, 30.0f)));
@@ -52,8 +58,17 @@ bool Scene::init() {
 
 	success = vaseModel.initMesh();
 	if (!success) return false;
+	
+	success = bowl.initMesh();
+	if (!success) return false;
+
+	success = goblet.initMesh();
+	if (!success) return false;
 
 	success = grid.init(GRID_SIZE, GRID_SIZE);
+	if (!success) return false;
+
+	success = ceiling.init(GRID_SIZE, GRID_SIZE);
 	if (!success) return false;
 
 	success = wallFar.init(WALL_LENGTH, WALL_HEIGHT);
@@ -109,11 +124,25 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	mvs.pop();
 	//mvs.active = rotate(mvs.active, 10 * time, vec3(0.0f, 1.0f, 0.0f));
 
+	// on random intervals change the light color slightly to emulate the
+	// flickering of light given off by flames
+	if (rand() % 10 < 5) {
+		adjLightAmb = lightAmbient;
+		adjLightDiff = lightDiffuse;
+		adjLightSpec = lightSpecular;
+
+		float adjustment = mix(-0.02f, 0.02f, float(rand()) / RAND_MAX);
+		adjLightAmb += adjustment;
+		adjLightDiff += adjustment;
+		adjLightSpec += adjustment;
+	}
+
+
 	// push the light properties to the shader
 	shader.setUniform("lightPosition", eyeLightPos);
-	shader.setUniform("Ld", lightDiffuse);
-	shader.setUniform("La", lightAmbient);
-	shader.setUniform("Ls", lightSpecular);
+	shader.setUniform("La", adjLightAmb);
+	shader.setUniform("Ld", adjLightDiff);
+	shader.setUniform("Ls", adjLightSpec);
 
 	// push light properties to the texture shader
 	textureShader->use();
@@ -125,8 +154,24 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	// draw the grid in meters
 	grid.draw(shader, mvs.active, proj);
 
+	// draw a ceiling
+	mvs.push();
+	mvs.active = translate(mvs.active, vec3(0.0f, WALL_HEIGHT - 1, 0.0f));
+	mvs.active = rotate(mvs.active, 180.0f, vec3(1.0f, 0.0f, 0.0f));
+	ceiling.draw(shader, mvs.active, proj);
+	mvs.pop();
+
 	// transform far wall and draw it
 	mvs.push();
+	mvs.active = translate(mvs.active, vec3(0.0f, 0.0f, -WALL_DIST));
+	mvs.active = translate(mvs.active, vec3(0.0f, WALL_HEIGHT / 2.0f, 0.0f));
+	mvs.active = rotate(mvs.active, 90.0f, vec3(1.0f, 0.0f, 0.0f));
+	wallFar.draw(shader, mvs.active, proj);
+	mvs.pop();
+
+	// transform near wall and draw it
+	mvs.push();
+	mvs.active = rotate(mvs.active, 180.0f, vec3(0.0f, 1.0f, 0.0f));
 	mvs.active = translate(mvs.active, vec3(0.0f, 0.0f, -WALL_DIST));
 	mvs.active = translate(mvs.active, vec3(0.0f, WALL_HEIGHT / 2.0f, 0.0f));
 	mvs.active = rotate(mvs.active, 90.0f, vec3(1.0f, 0.0f, 0.0f));
@@ -189,14 +234,29 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 
 	// draw vase
 	mvs.active = translate(mvs.active, vec3(0.0f, TABLE_HEIGHT, 0.0f));
+	mvs.push();
+	mvs.active = translate(mvs.active, vec3(12.0f, 0.0f, 6.0f));
 	success = vaseModel.draw(shader, mvs, proj);	
 	if (!success) return false;
+	mvs.pop();
+	// draw bowl
+	mvs.push();
+	mvs.active = translate(mvs.active, vec3(-10.0f, 0.0f, -5.0f));
+	success = bowl.draw(shader, mvs, proj);	
+	if (!success) return false;
+	mvs.pop();
+	// draw goblet
+	mvs.push();
+	mvs.active = translate(mvs.active, vec3(-6.0f, 0.0f, 8.0f));
+	success = goblet.draw(shader, mvs, proj);	
+	if (!success) return false;
+	mvs.pop();
 
 	// scale back up to meters and draw particle fountain
-	mvs.active = translate(mvs.active, vec3(0.0f, 15.0f, 0.0f));
-	mvs.active = scale(mvs.active, vec3(1 / METERS_PER_INCH, 1 / METERS_PER_INCH, 1 / METERS_PER_INCH));
+	//mvs.active = translate(mvs.active, vec3(0.0f, 15.0f, 0.0f));
+	//mvs.active = scale(mvs.active, vec3(1 / METERS_PER_INCH, 1 / METERS_PER_INCH, 1 / METERS_PER_INCH));
 	//success = fountain.draw(*fountainShader, mvs, proj, time);
-	if (!success) return false;
+	//if (!success) return false;
 
 	mvs.pop();
 

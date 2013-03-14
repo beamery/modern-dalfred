@@ -5,7 +5,7 @@ in vec3 normal;
 in vec3 position;
 
 uniform sampler2D spriteTexture;
-uniform vec4 lightPosition = vec4(0.0);
+uniform vec4 lightPosition;
 uniform vec3 La; // light ambient intensity
 uniform vec3 Ld; // light diffuse intensity
 uniform vec3 Ls; // light specular intensity

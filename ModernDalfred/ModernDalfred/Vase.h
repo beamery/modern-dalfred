@@ -35,14 +35,16 @@ public:
 	 * slices: number of horizontal slices
 	 * stacks: number of vertical stacks
 	 */
-	VaseModel(vec3 color,
+	VaseModel(vec3 ambient,
+		vec3 diffuse,
+		vec3 specular,
 		float height,
-		 float radius,
-		 float curveMag, 
-		 float curveFreq, 
-		 float curveOffset,
-		 int slices,
-		 int stacks);
+		float radius,
+		float curveMag, 
+		float curveFreq, 
+		float curveOffset,
+		int slices,
+		int stacks);
 
 	bool initMesh();
 

@@ -1,11 +1,11 @@
 #include "Vase.h"
 
-VaseModel::VaseModel(vec3 color, float height, float radius, float curveMag, float curveFreq, 
+VaseModel::VaseModel(vec3 ambient, vec3 diffuse, vec3 specular, float height, float radius, float curveMag, float curveFreq, 
 					 float curveOffset, int slices, int stacks) :
 					height(height), rad(radius), cMag(curveMag), 
 					cFreq(curveFreq), cOffset(curveOffset), slices(slices), stacks(stacks),
-					mesh(color, color, color, 50.0f),
-					base(color, color, color, 50.0f)
+					mesh(ambient, diffuse, specular, 50.0f),
+					base(ambient, diffuse, specular, 50.0f)
 {}
 
 

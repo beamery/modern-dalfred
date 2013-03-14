@@ -4,8 +4,8 @@
 #define WORLD_UNITS_PER_METER 1.00f
 
 // in meters
-#define GRID_SIZE 16
-#define WALL_DIST 3.3f
+#define GRID_SIZE 11
+#define WALL_DIST 4.0f
 #define WALL_HEIGHT 4
 #define WALL_LENGTH 10
 
@@ -60,6 +60,8 @@ private:
 
 	TableModel tableModel;
 	VaseModel vaseModel;
+	VaseModel bowl;
+	VaseModel goblet;
 
 	ParticleFountain fountain;
 	ParticleShader *fountainShader;
@@ -70,6 +72,7 @@ private:
 	Grid wallFar;
 	Grid wallLeft;
 	Grid grid;
+	Grid ceiling;
 	Cube cube;
 	Cylinder sDisk;
 	Torus torus;
@@ -81,6 +84,10 @@ private:
 	vec3 lightDiffuse;
 	vec3 lightAmbient;
 	vec3 lightSpecular;
+
+	vec3 adjLightDiff;
+	vec3 adjLightAmb;
+	vec3 adjLightSpec;
 };
 
 

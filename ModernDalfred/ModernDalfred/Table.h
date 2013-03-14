@@ -26,7 +26,7 @@ class TableModel {
 
 public:
 	// initialize table with the given color
-	TableModel(vec3 color);
+	TableModel(vec3 ambient, vec3 diffuse, vec3 specular);
 
 	bool initMesh();
 
@@ -35,7 +35,6 @@ public:
 
 private:
 	Cube cube;
-	vec3 color;
 	bool drawLeg(Shader &shader, MatrixStack &mvs, mat4 proj, float xOffset, float zOffset);
 	bool drawSide(Shader &shader, MatrixStack &mvs, mat4 proj, float xOffset, float zOffset, 
 		float xScale, float zScale);

@@ -35,7 +35,7 @@ struct Options {
 	int shader;
 	float rotX, rotY;
 	bool wireframe;
-	int shaderView;
+	int view;
 	Shader *currentShader;
 	float oldTime;
 	float startTime;
@@ -77,7 +77,7 @@ void DisplayFunc() {
 	mat4 projection = perspective(window.fov, window.window_aspect, 0.1f, 1000.0f);
 
 	// PERFORM CAMERA TRANSFORMS
-	mvs.active = translate(mvs.active, vec3(0.0f, -1.0f, -4.0f));
+	mvs.active = translate(mvs.active, vec3(0.0f, -1.0f, -3.0f));
 	// put camera 4m above the scene and pull it back 10m
 	//mvs.active = translate(mvs.active, vec3(0.0f, -4.0f, -10.0f));
 	//mvs.active = rotate(mvs.active, 30.0f, vec3(1.0f, 0.0f, 0.0f));
@@ -88,7 +88,7 @@ void DisplayFunc() {
 	// setup the current shader
 	options.currentShader = shaders[options.shader];
 	options.currentShader->use();
-	options.currentShader->setUniform("view", options.shaderView);
+	options.currentShader->setUniform("view", options.view);
 
 	// update the scene with the amount of time since the last frame
 	scene.update(elapsedTime);
@@ -164,16 +164,16 @@ void SpecialFunc(int c, int x, int y) {
 		break;
 	case GLUT_KEY_DOWN:
 		//scene.moveLight(0.0f, 1.0f);
-		options.rotX = std::max(-89.0f, options.rotX - 1.0f);
+		options.rotX = std::max(-17.0f, options.rotX - 1.0f);
 		break;
 	// F1 cycles views
 	case GLUT_KEY_F1:
-		options.shaderView = (options.shaderView + 1) % NUM_VIEWS;
-		cout << viewStrings[options.shaderView] << endl;
+		options.view = (options.view + 1) % NUM_VIEWS;
+		cout << viewStrings[options.view] << endl;
 		break;
 	// F2 resets to the finished view
 	case GLUT_KEY_F2:
-		options.shaderView = 0;
+		options.view = 0;
 		break;
 	}
 
@@ -303,10 +303,11 @@ void setViewStrings() {
 
 
 int main(int argc, char * argv[]) {
-	options.shader = 0;
-	options.rotX = options.rotY = 0.0f;
+	options.shader = 2;
+	options.rotX = 0.0f;
+	options.rotY = -45.0f;
 	options.wireframe = false;
-	options.shaderView = 0;
+	options.view = 0;
 	options.oldTime = 0.0f;
 	window.fov = 50.0f;
 	

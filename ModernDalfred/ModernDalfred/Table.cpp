@@ -1,7 +1,7 @@
 #include "Table.h"
 
-TableModel::TableModel(vec3 color) : color(color),
-	cube(color, color, color, 15.0f)
+TableModel::TableModel(vec3 ambient, vec3 diffuse, vec3 specular) :
+	cube(ambient, diffuse, specular, 15.0f)
 {}
 
 
