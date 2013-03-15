@@ -26,6 +26,7 @@
 #include "ParticleShader.h"
 #include "Mesh.h"
 #include "Triangle.h"
+#include "Square.h"
 #include "Grid.h"
 #include "Cube.h"
 #include "Cylinder.h"
@@ -78,6 +79,7 @@ private:
 	Torus torus;
 
 	Triangle triangle;
+	Square square;
 	Shader *textureShader;
 
 	vec4 lightPos;

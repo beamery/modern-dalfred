@@ -3,12 +3,14 @@
 Fireplace::Fireplace(vec3 pos, vec3 ambient, vec3 diff, vec3 spec) : 
 	position(pos),
 	cube(ambient, diff, spec, 10.0f, "brick"),
-	fire(2500)
+	fire(3000),
+	backdrop("brick")
 {}
 
 bool Fireplace::initMesh() {
 	if (!cube.init()) return false;
 	if (!fire.initGL()) return false;
+	if (!backdrop.init()) return false;
 
 	return true;
 }
@@ -20,8 +22,7 @@ bool Fireplace::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, float t
 	mvs.active = translate(mvs.active, this->position);
 
 	
-	// Draw backdrop using cubes because I'm lazy and don't feel like adding texturing to the grid
-	// class yet
+	// Draw backdrop using squares
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 4; j++) {
 			mvs.push();
@@ -31,9 +32,9 @@ bool Fireplace::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, float t
 				vec3(
 				-(FP_WIDTH / 2 - FP_BLOCK_THICKNESS / 2) + FP_BLOCK_THICKNESS, 
 				0.5f * FP_BLOCK_THICKNESS, 
-				-FP_BLOCK_THICKNESS + 0.01f));
+				+ 0.01f));
 			mvs.active = scale(mvs.active, vec3(FP_BLOCK_THICKNESS, FP_BLOCK_THICKNESS, FP_BLOCK_THICKNESS));
-			cube.draw(shader, mvs.active, proj);
+			backdrop.draw(shader, mvs, proj);
 			mvs.pop();
 		}
 
@@ -110,7 +111,7 @@ bool Fireplace::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj, float t
 
 
 	// draw chimney
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 6; i++) {
 		mvs.push();
 		mvs.active = translate(mvs.active, vec3(0.0f, FP_BLOCK_THICKNESS * i, 0.0f));
 		mvs.active = translate(mvs.active, 

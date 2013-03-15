@@ -26,6 +26,7 @@
 #include "Shader.h"
 #include "Cube.h"
 #include "ParticleFire.h"
+#include "Square.h"
 
 /*
  * A class which holds the model for a fireplace, fire included. This may be
@@ -49,6 +50,7 @@ public:
 private:
 	bool drawSide(Shader &shader, MatrixStack &mvs, const mat4 &proj, float xOffset);
 	Cube cube;
+	Square backdrop;
 	ParticleFire fire;
 	vec3 position;
 	ParticleShader *fireShader;

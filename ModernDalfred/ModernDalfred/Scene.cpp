@@ -24,12 +24,13 @@ Scene::Scene() :
 	fountain(10000),
 	fire(3000),
 	fireplace(vec3(0.0f, 0.0f, -WALL_DIST + FP_BLOCK_THICKNESS / 2 * METERS_PER_INCH), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f)),
-	triangle()
+	triangle(),
+	square("brick")
 {
 	// light position in world space
 	lightPos = vec4(0.0f, 0.3f, -WALL_DIST + FP_BLOCK_THICKNESS / 2 * METERS_PER_INCH + 0.2f, 1.0f);
 	lightDiffuse = vec3(0.7f, 0.5f, 0.3f);
-	lightAmbient = vec3(0.3f, 0.3f, 0.3f);
+	lightAmbient = vec3(0.1f, 0.1f, 0.1f);
 	lightSpecular = vec3(0.65f, 0.5f, 0.5f);
 
 	// add stools to surround the table
@@ -96,6 +97,9 @@ bool Scene::init() {
 	if (!success) return false;
 
 	success = triangle.init(); 
+	if (!success) return false;
+
+	success = square.init(); 
 	if (!success) return false;
 
 	return true;
@@ -180,6 +184,12 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 
 	// draw fireplace
 	fireplace.draw(*textureShader, mvs, proj, time);
+
+	mvs.push();
+	mvs.active = translate(mvs.active, vec3(0.0f, 1.0f, 0.0f));
+	mvs.active = rotate(mvs.active, 180.0f, vec3(1.0f, 0.0f, 0.0f));
+	//square.draw(*textureShader, mvs, proj);
+	mvs.pop();
 
 	// transform right wall and draw it
 	mvs.push();
