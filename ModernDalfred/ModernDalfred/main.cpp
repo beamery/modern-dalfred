@@ -23,6 +23,8 @@
 using namespace std;
 using namespace glm;
 
+void DisplayInstructions();
+
 struct Window {
 	int window_handle;
 	ivec2 size;
@@ -304,9 +306,14 @@ void setViewStrings() {
 	viewStrings.push_back("View 6 - Specular Dot Product");
 }
 
+void setWindowInstructions() {
+	window.instructions.push_back("Brian Murray - CS 559 Project 2");
+	window.instructions.push_back("Herp Derp");
+}
 
 
 int main(int argc, char * argv[]) {
+	setWindowInstructions();
 	options.shader = 2;
 	options.rotX = 0.0f;
 	options.rotY = -45.0f;
@@ -319,7 +326,7 @@ int main(int argc, char * argv[]) {
 	glutInitWindowSize(1280, 720);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 
-	window.window_handle = glutCreateWindow("Modern Hello World");
+	window.window_handle = glutCreateWindow("Modern Dalfred");
 	glutReshapeFunc(ReshapeFunc);
 	glutDisplayFunc(DisplayFunc);
 	glutKeyboardFunc(KeyboardFunc);
