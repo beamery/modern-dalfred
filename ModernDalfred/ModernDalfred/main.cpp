@@ -269,6 +269,7 @@ void initTextures() {
 	TextureManager::get()->loadTexture("brick.png", "brick");
 	TextureManager::get()->loadTexture("water_droplet.png", "water_droplet");
 	TextureManager::get()->loadTexture("fire.png", "fire");
+	TextureManager::get()->loadTexture("starry_night.png", "starry_night");
 
 	textureShader = new Shader();
 	textureShader->init("texture.vert", "texture.frag");

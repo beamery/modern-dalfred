@@ -25,7 +25,7 @@ Scene::Scene() :
 	fire(3000),
 	fireplace(vec3(0.0f, 0.0f, -WALL_DIST + FP_BLOCK_THICKNESS / 2 * METERS_PER_INCH), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f), vec3(0.9f, 0.9f, 0.9f)),
 	triangle(),
-	square("brick")
+	painting("starry_night")
 {
 	// light position in world space
 	lightPos = vec4(0.0f, 0.3f, -WALL_DIST + FP_BLOCK_THICKNESS / 2 * METERS_PER_INCH + 0.2f, 1.0f);
@@ -99,7 +99,7 @@ bool Scene::init() {
 	success = triangle.init(); 
 	if (!success) return false;
 
-	success = square.init(); 
+	success = painting.init(); 
 	if (!success) return false;
 
 	return true;
@@ -186,9 +186,10 @@ bool Scene::draw(Shader &shader, MatrixStack &mvs, const mat4 &proj,
 	fireplace.draw(*textureShader, mvs, proj, time);
 
 	mvs.push();
-	mvs.active = translate(mvs.active, vec3(0.0f, 1.0f, 0.0f));
-	mvs.active = rotate(mvs.active, 180.0f, vec3(1.0f, 0.0f, 0.0f));
-	//square.draw(*textureShader, mvs, proj);
+	mvs.active = translate(mvs.active, vec3(-WALL_DIST + 0.001f, 1.5f, -1.5f));
+	mvs.active = rotate(mvs.active, 90.0f, vec3(0.0f, 1.0f, 0.0f));
+	mvs.active = scale(mvs.active, vec3(1.28f * 1.5f, 1.014f * 1.5f, 1.0f));
+	painting.draw(*textureShader, mvs, proj);
 	mvs.pop();
 
 	// transform right wall and draw it

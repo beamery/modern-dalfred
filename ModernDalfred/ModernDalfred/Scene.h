@@ -79,7 +79,7 @@ private:
 	Torus torus;
 
 	Triangle triangle;
-	Square square;
+	Square painting;
 	Shader *textureShader;
 
 	vec4 lightPos;
